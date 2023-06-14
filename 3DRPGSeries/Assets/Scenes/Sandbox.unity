@@ -1602,7 +1602,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e8117d73887def499055d773139d974, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerNavMesh: {fileID: 1537029585}
   target: {fileID: 1378264149}
+--- !u!195 &1537029585 stripped
+NavMeshAgent:
+  m_CorrespondingSourceObject: {fileID: 4446796210351485000, guid: c27a5069370f9d84095da0545d107929, type: 3}
+  m_PrefabInstance: {fileID: 7124402515123575908}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1592720474 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 139386, guid: c2849fd453abd0445a702a035f04ac60, type: 3}
