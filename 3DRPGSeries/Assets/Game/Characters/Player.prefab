@@ -10,10 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 2930993999238213498}
   - component: {fileID: 6594572380401677164}
+  - component: {fileID: 8971840321281168336}
   - component: {fileID: 4446796210351485000}
   - component: {fileID: 6375115226844527779}
   - component: {fileID: 762600126078145171}
-  - component: {fileID: 8971840321281168336}
+  - component: {fileID: 6848067944688341109}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -79,6 +80,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!95 &8971840321281168336
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6163010608809853589}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: d288a0e4a2d923b46898986e979da643, type: 3}
+  m_Controller: {fileID: 9100000, guid: c70f627033c6da542a2db58dfe295dfa, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!195 &4446796210351485000
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -128,27 +150,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerNavMesh: {fileID: 4446796210351485000}
   PlayerAnimator: {fileID: 8971840321281168336}
---- !u!95 &8971840321281168336
-Animator:
-  serializedVersion: 5
+--- !u!114 &6848067944688341109
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6163010608809853589}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: d288a0e4a2d923b46898986e979da643, type: 3}
-  m_Controller: {fileID: 9100000, guid: c70f627033c6da542a2db58dfe295dfa, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1836cf8e7dc66b45a587f2eae59a597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7119143348037138903
 PrefabInstance:
   m_ObjectHideFlags: 0
