@@ -14,8 +14,8 @@ namespace RPG.Combat
         //sets the delay between player attacks, will be replaced by weapon properties later
         [SerializeField] float WeaponDamage;
         //sets the damage of player attacks, will be replaced by weapon properties later
-        Transform target;
-        //the transform of the combat target
+        Health target;
+        //the Health component of the combat target, gives us acess to health methods (like IsDead()).
         float timeSinceLastAttack;
         //the time since the player last attacked
         private void Update()
@@ -23,10 +23,12 @@ namespace RPG.Combat
             timeSinceLastAttack += Time.deltaTime;
             if (target == null) { return; }
             //if there is no target, do none of this
+            if (target.IsDead()) { return; }
+            //if target is dead, do none of this
             if (target != null && !GetIsInRange())
             //putting the GetIsInRange after target != null, this prevents null refrence error, as the function will only be called if there is a target
             {
-                GetComponent<Mover>().MoveTo(target.position);
+                GetComponent<Mover>().MoveTo(target.transform.position);
                 //move to the target
             }
             //if the fighter has an active target and is in range, move to the target
@@ -55,15 +57,13 @@ namespace RPG.Combat
         void Hit()
         //hit trigger on attack animation
         {
-            Health healthComponent = target.GetComponent<Health>();
-            //gets the target healthComponent
-            healthComponent.TakeDamage(WeaponDamage);
+            target.TakeDamage(WeaponDamage);
             //makes the healthPoints component take the desired amount of damage
         }
 
         private bool GetIsInRange()
         {
-            return Vector3.Distance(transform.position, target.position) < weaponRange;
+            return Vector3.Distance(transform.position, target.transform.position) < weaponRange;
             //if the distance between self, and target position is in range, set true.
         }
 
@@ -71,13 +71,15 @@ namespace RPG.Combat
         {
             GetComponent<ActionScheduler>().StartAction(this);
             //Starts the attack action
-            target = combatTarget.transform;
+            target = combatTarget.GetComponent<Health>();
             //sets the target to our combat target
             print("Die you GameObject!");
         }
 
         public void Cancel()
         {
+            GetComponent<Animator>().SetTrigger("stopAttack");
+            //cancels any attack animation and return to locomotion
             target = null;
             //set current target to null
         }

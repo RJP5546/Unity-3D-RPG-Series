@@ -10,6 +10,11 @@ namespace RPG.Combat
         //set the healthPoints value in the inspector, will be changed based on stats later
         bool isDead = false;
         //default is alive
+        public bool IsDead()
+        {
+            return isDead;
+            //lets other classes know if object is dead.
+        }
 
         public void TakeDamage(float damage)
         {
