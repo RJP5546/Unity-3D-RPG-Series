@@ -81,7 +81,7 @@ namespace RPG.Combat
             //if the distance between self, and target position is in range, set true.
         }
 
-        public void Attack(CombatTarget combatTarget)
+        public void Attack(GameObject combatTarget)
         {
             GetComponent<ActionScheduler>().StartAction(this);
             //Starts the attack action
@@ -107,7 +107,7 @@ namespace RPG.Combat
             //cancels any attack animation and return to locomotion
         }
 
-        public bool CanAttack(CombatTarget combatTarget)
+        public bool CanAttack(GameObject combatTarget)
         {
             if(combatTarget == null) { return false; }
             //if there is no target, object cannot attack it

@@ -33,11 +33,13 @@ namespace RPG.Control
             {
                 CombatTarget target = hit.transform.GetComponent<CombatTarget>();
                 //every object has a transform component, and a component can see any other sibling component on an object
-                if (!GetComponent<Fighter>().CanAttack(target)) { continue; }
+                if (target == null) {continue; }
+                //if there is no combat target, make it not clickable
+                if (!GetComponent<Fighter>().CanAttack(target.gameObject)) { continue; }
                 //if we cant attack,conntine in the foreach loop (going to the next thing in array)
                 if(Input.GetMouseButtonDown(0)) 
                 {
-                    GetComponent<Fighter>().Attack(target);
+                    GetComponent<Fighter>().Attack(target.gameObject);
                 }
                 return true;
                 //returns true even for hovering over a target
