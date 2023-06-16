@@ -32,9 +32,9 @@ namespace RPG.Control
             foreach (RaycastHit hit in hits)
             {
                 CombatTarget target = hit.transform.GetComponent<CombatTarget>();
-                    //every object has a transform component, and a component can see any other sibling component on an object
-                if(target == null) continue;
-                //if this is true, move on to the next item in the array
+                //every object has a transform component, and a component can see any other sibling component on an object
+                if (!GetComponent<Fighter>().CanAttack(target)) { continue; }
+                //if we cant attack,conntine in the foreach loop (going to the next thing in array)
                 if(Input.GetMouseButtonDown(0)) 
                 {
                     GetComponent<Fighter>().Attack(target);

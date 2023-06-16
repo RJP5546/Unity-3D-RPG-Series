@@ -42,7 +42,10 @@ namespace RPG.Combat
 
         private void AttackBehavior()
         {
-            if(timeSinceLastAttack > TimeBetweenAttacks) 
+            transform.LookAt(target.transform.position);
+            //look at the target during attack
+            if (timeSinceLastAttack > TimeBetweenAttacks)
+                //if the time since last attack is greater than the cooldown between attacks, if true, able to attack.
             {
                 GetComponent<Animator>().SetTrigger("attack");
                 //play the attack animation using attack trigger
@@ -84,6 +87,15 @@ namespace RPG.Combat
             //set current target to null
         }
 
+        public bool CanAttack(CombatTarget combatTarget)
+        {
+            if(combatTarget == null) { return false; }
+            //if there is no target, object cannot attack it
+            Health targetToTest = combatTarget.GetComponent<Health>();
+            //sets the target to test as the current combat target
+            return targetToTest != null && !targetToTest.IsDead();
+            //returns if the target to test exists and returns if it is dead.
+        }
         
     }
 }
