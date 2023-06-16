@@ -58,7 +58,7 @@ namespace RPG.Combat
             Health healthComponent = target.GetComponent<Health>();
             //gets the target healthComponent
             healthComponent.TakeDamage(WeaponDamage);
-            //makes the health component take the desired amount of damage
+            //makes the healthPoints component take the desired amount of damage
         }
 
         private bool GetIsInRange()

@@ -6,16 +6,32 @@ namespace RPG.Combat
 {
     public class Health : MonoBehaviour
     {
-        [SerializeField] float health;
-        //set the health value in the inspector, will be changed based on stats later
+        [SerializeField] float healthPoints;
+        //set the healthPoints value in the inspector, will be changed based on stats later
+        bool isDead = false;
+        //default is alive
 
         public void TakeDamage(float damage)
         {
-            health = Mathf.Max(health - damage, 0f);
-            //sets health to whats higher, either health- damage, or 0. This prevents health from going below 0
-            print(health);
+            healthPoints = Mathf.Max(healthPoints - damage, 0f);
+            //sets healthPoints to whats higher, either healthPoints- damage, or 0. This prevents healthPoints from going below 0
+            print(healthPoints);
+            if(healthPoints == 0f)
+            {
+                Die();
+                //when the object health hits 0, call Die().
+            }
         }
 
+        private void Die()
+        {
+            if (isDead) { return; }
+            //if dead ignore
+            isDead = true;
+            //if first time dead, set dead to true
+            GetComponent<Animator>().SetTrigger("die");
+            //playes the death animation
+        }
     }
 }
 
