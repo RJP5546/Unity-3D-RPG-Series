@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RPG.Combat
 {
-    public class Fighter : MonoBehaviour
+    public class Fighter : MonoBehaviour, IAction
     {
         [SerializeField] float weaponRange = 2f;
         //sets the players weapon range, or the distance away from the enemy that the player stops to attack.
@@ -24,7 +24,7 @@ namespace RPG.Combat
             //if the fighter has an active target and is in range, move to the target
             else
             {
-                GetComponent<Mover>().Stop();
+                GetComponent<Mover>().Cancel();
             }
         }
 
