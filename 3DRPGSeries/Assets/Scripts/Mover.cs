@@ -27,8 +27,15 @@ namespace RPG.Movement
 
         public void MoveTo(Vector3 destination)
         {
+            PlayerNavMesh.isStopped = false;
+            //enables player movement
             PlayerNavMesh.destination = destination;
             //sets the players navmesh agent destination to the point where the ray hits an object
+        }
+        public void Stop()
+        {
+            PlayerNavMesh.isStopped = true;
+            //stops the player movement
         }
 
         private void UpdateAnimator()
