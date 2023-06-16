@@ -1,3 +1,4 @@
+using RPG.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using UnityEngine.AI;
 namespace RPG.Movement
 //core namespaces apply to Movement scripts
 {
-    public class Mover : MonoBehaviour
+    public class Mover : MonoBehaviour, IAction
     {
         [SerializeField] NavMeshAgent PlayerNavMesh;
         //set the component that we are using as the player navmesh
@@ -23,6 +24,12 @@ namespace RPG.Movement
             UpdateAnimator();
         }
 
+        public void StartMoveAction(Vector3 destination)
+        {
+            GetComponent<ActionScheduler>().StartAction(this);
+            MoveTo(destination);
+        }
+
 
 
         public void MoveTo(Vector3 destination)
@@ -32,7 +39,7 @@ namespace RPG.Movement
             PlayerNavMesh.destination = destination;
             //sets the players navmesh agent destination to the point where the ray hits an object
         }
-        public void Stop()
+        public void Cancel()
         {
             PlayerNavMesh.isStopped = true;
             //stops the player movement
