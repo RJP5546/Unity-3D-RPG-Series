@@ -45,21 +45,32 @@ namespace RPG.Combat
             transform.LookAt(target.transform.position);
             //look at the target during attack
             if (timeSinceLastAttack > TimeBetweenAttacks)
-                //if the time since last attack is greater than the cooldown between attacks, if true, able to attack.
+            //if the time since last attack is greater than the cooldown between attacks, if true, able to attack.
             {
-                GetComponent<Animator>().SetTrigger("attack");
-                //play the attack animation using attack trigger
-                //This will trigger the Hit() event.
+                TriggerAttack();
                 timeSinceLastAttack = 0f;
                 //resets time between attack
-                
+
             }
 
+        }
+
+        private void TriggerAttack()
+            //sets the animation triggers for attack to their proper values
+        {
+            GetComponent<Animator>().ResetTrigger("stopAttack");
+            //resets the trigger on stop attack, preventing a bug where it is stored upon exiting combat. If it is reset upon
+            //entering combat, we wont have it already initialised upon initiating combat
+            GetComponent<Animator>().SetTrigger("attack");
+            //play the attack animation using attack trigger
+            //This will trigger the Hit() event.
         }
 
         void Hit()
         //hit trigger on attack animation
         {
+            if(target == null) { return; }
+            //if there is no target when the event triggers, return null to prevent error
             target.TakeDamage(WeaponDamage);
             //makes the healthPoints component take the desired amount of damage
         }
@@ -80,11 +91,20 @@ namespace RPG.Combat
         }
 
         public void Cancel()
+            //cancels attacking
         {
-            GetComponent<Animator>().SetTrigger("stopAttack");
-            //cancels any attack animation and return to locomotion
+            StopAttack();
             target = null;
             //set current target to null
+        }
+
+        private void StopAttack()
+        //sets the animation triggers for attack to their proper values upon exiting
+        {
+            GetComponent<Animator>().ResetTrigger("attack");
+            //reset the attack tag to prevent improper storage upon exiting combat
+            GetComponent<Animator>().SetTrigger("stopAttack");
+            //cancels any attack animation and return to locomotion
         }
 
         public bool CanAttack(CombatTarget combatTarget)
