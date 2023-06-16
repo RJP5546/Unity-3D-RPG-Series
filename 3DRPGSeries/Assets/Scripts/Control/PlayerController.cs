@@ -17,12 +17,15 @@ namespace RPG.Control
 
         private void Update()
         {
-            InteractWithCombat();
-            InteractWithMovement();
+            if (InteractWithCombat()) { return; }
+            //if InteractWithCombat is true, ignore movement.
+            if (InteractWithMovement()) { return; }
+            //if InteractWithMovement is true, allow movement, if not, it will continue and say there is no action the player can take
+            print("Nothing to do.");
 
         }
 
-        private void InteractWithCombat()
+        private bool InteractWithCombat()
         {
             RaycastHit[] hits = Physics.RaycastAll(GetMouseRay());
             //puts everything the ray hits into an array
@@ -36,19 +39,13 @@ namespace RPG.Control
                 {
                     GetComponent<Fighter>().Attack(target);
                 }
+                return true;
+                //returns true even for hovering over a target
             }
+            return false;
         }
 
-        private void InteractWithMovement()
-        {
-            if (Input.GetMouseButton(0))
-            //GetMouseButton is true while the button is held,GetMouseButtonDown is true when pressed, must be pressed again to trigger again
-            {
-                MoveToCursor();
-            }
-        }
-
-        private void MoveToCursor()
+        private bool InteractWithMovement()
         {
             RaycastHit hit;
             //variable for where the Raycast has hit
@@ -59,9 +56,17 @@ namespace RPG.Control
             //draw in the editor where the ray is being shot. The 100 multiplies the length of the ray to make it more visible.
             if (hasHit)
             {
-                PlayerMover.MoveTo(hit.point);
-                //passes the point where the ray hits an object as a vector3
+                if (Input.GetMouseButton(0))
+                //GetMouseButton is true while the button is held,GetMouseButtonDown is true when pressed, must be pressed again to trigger again
+                {
+                    PlayerMover.MoveTo(hit.point);
+                    //passes the point where the ray hits an object as a vector3
+                }
+                return true;
+                //if the ray finds an object the player can interact with, return true
             }
+            return false;
+            //if the ray does not find an object the player can interact with, return false
         }
 
         private static Ray GetMouseRay()
