@@ -13,9 +13,10 @@ namespace RPG.Combat
         //the transform of the combat target
         private void Update()
         {
-            bool isInRange = Vector3.Distance(transform.position, target.position) < weaponRange;
-            //if the distance between self, and target position is in range, set true.
-            if(target != null && !isInRange)
+            if (target == null) { return; }
+            //if there is no target, do none of this
+            if (target != null && !GetIsInRange())
+            //putting the GetIsInRange after target != null, this prevents null refrence error, as the function will only be called if there is a target
             {
                 GetComponent<Mover>().MoveTo(target.position);
             }
@@ -25,10 +26,22 @@ namespace RPG.Combat
                 GetComponent<Mover>().Stop();
             }
         }
+
+        private bool GetIsInRange()
+        {
+            return Vector3.Distance(transform.position, target.position) < weaponRange;
+            //if the distance between self, and target position is in range, set true.
+        }
+
         public void Attack(CombatTarget combatTarget)
         {
             target = combatTarget.transform;
             print("Die you GameObject!");
+        }
+
+        public void Cancel()
+        {
+            target = null;
         }
     }
 }
