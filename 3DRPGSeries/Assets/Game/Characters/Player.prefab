@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6375115226844527779}
   - component: {fileID: 762600126078145171}
   - component: {fileID: 6848067944688341109}
+  - component: {fileID: 5915926916123214562}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -36,7 +37,7 @@ Transform:
   m_Children:
   - {fileID: 7119143348036705485}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &6594572380401677164
 MeshRenderer:
@@ -160,6 +161,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b1836cf8e7dc66b45a587f2eae59a597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponRange: 2
+  TimeBetweenAttacks: 2
+  WeaponDamage: 5
+--- !u!114 &5915926916123214562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6163010608809853589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 126624b925f1cda42a0c14539364a4a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &7119143348037138903

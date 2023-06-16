@@ -12,6 +12,8 @@ namespace RPG.Combat
         //sets the players weapon range, or the distance away from the enemy that the player stops to attack.
         [SerializeField] float TimeBetweenAttacks;
         //sets the delay between player attacks, will be replaced by weapon properties later
+        [SerializeField] float WeaponDamage;
+        //sets the damage of player attacks, will be replaced by weapon properties later
         Transform target;
         //the transform of the combat target
         float timeSinceLastAttack;
@@ -42,9 +44,21 @@ namespace RPG.Combat
             {
                 GetComponent<Animator>().SetTrigger("attack");
                 //play the attack animation using attack trigger
+                //This will trigger the Hit() event.
                 timeSinceLastAttack = 0f;
+                //resets time between attack
+                
             }
 
+        }
+
+        void Hit()
+        //hit trigger on attack animation
+        {
+            Health healthComponent = target.GetComponent<Health>();
+            //gets the target healthComponent
+            healthComponent.TakeDamage(WeaponDamage);
+            //makes the health component take the desired amount of damage
         }
 
         private bool GetIsInRange()
@@ -68,11 +82,7 @@ namespace RPG.Combat
             //set current target to null
         }
 
-        void Hit()
-        //hit trigger on attack animation
-        {
-
-        }
+        
     }
 }
 
