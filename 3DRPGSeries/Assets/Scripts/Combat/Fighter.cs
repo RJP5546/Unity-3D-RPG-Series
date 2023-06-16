@@ -10,10 +10,15 @@ namespace RPG.Combat
     {
         [SerializeField] float weaponRange = 2f;
         //sets the players weapon range, or the distance away from the enemy that the player stops to attack.
+        [SerializeField] float TimeBetweenAttacks;
+        //sets the delay between player attacks, will be replaced by weapon properties later
         Transform target;
         //the transform of the combat target
+        float timeSinceLastAttack;
+        //the time since the player last attacked
         private void Update()
         {
+            timeSinceLastAttack += Time.deltaTime;
             if (target == null) { return; }
             //if there is no target, do none of this
             if (target != null && !GetIsInRange())
@@ -33,8 +38,13 @@ namespace RPG.Combat
 
         private void AttackBehavior()
         {
-            GetComponent<Animator>().SetTrigger("attack");
-            //play the attack animation using attack trigger
+            if(timeSinceLastAttack > TimeBetweenAttacks) 
+            {
+                GetComponent<Animator>().SetTrigger("attack");
+                //play the attack animation using attack trigger
+                timeSinceLastAttack = 0f;
+            }
+
         }
 
         private bool GetIsInRange()
