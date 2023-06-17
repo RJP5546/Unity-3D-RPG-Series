@@ -1,4 +1,5 @@
 using RPG.Combat;
+using RPG.Core;
 using RPG.Movement;
 using System;
 using System.Collections;
@@ -14,9 +15,17 @@ namespace RPG.Control
     {
         [SerializeField] Mover PlayerMover;
         //set the component that we are using as the player navmesh
+        [SerializeField] Health health;
+        //cache refrence to the health component
 
+        private void Start()
+        {
+            health = GetComponent<Health>();
+        }
         private void Update()
         {
+            if (health.IsDead()) { return; }
+            //if the player is dead, do nothing
             if (InteractWithCombat()) { return; }
             //if InteractWithCombat is true, ignore movement.
             if (InteractWithMovement()) { return; }

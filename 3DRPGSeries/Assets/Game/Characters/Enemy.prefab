@@ -145,8 +145,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ChaseDistance: 5
-  fighter: {fileID: 0}
+  fighter: {fileID: 6546774870686793352}
+  health: {fileID: 7076199584305204203}
   player: {fileID: 0}
+--- !u!114 &6546774870686793352 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6848067944688341109, guid: c27a5069370f9d84095da0545d107929, type: 3}
+  m_PrefabInstance: {fileID: 419934885371588349}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5788394302867336296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1836cf8e7dc66b45a587f2eae59a597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7076199584305204203 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7485086529385751830, guid: c27a5069370f9d84095da0545d107929, type: 3}
+  m_PrefabInstance: {fileID: 419934885371588349}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5788394302867336296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f982a744e09a22b46b2dce89cfba345f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &6166099031776649593
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
 using RPG.Combat;
+using RPG.Core;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -12,19 +13,21 @@ namespace RPG.Control
         //distance from the enemy that it will chase the player
         [SerializeField] Fighter fighter;
         //cache refrence to the fighter component
+        [SerializeField] Health health;
+        //cache refrence to the health component
         [SerializeField] GameObject player;
         //cache refrence to the fighter component
 
         private void Start ()
         {
-            fighter = GetComponent<Fighter>();
-            //initialises the fighter compoinent upon start.
             player = GameObject.FindWithTag("Player");
             //initialises the player component upon start
         }
 
         private void Update()
         {
+            if (health.IsDead()) { return; }
+            //if the player is dead, do nothing
             if (InAttackRangeOfPlayer() && fighter.CanAttack(player))
                 //if the player is within the attack range, and the fighter component can attack player
             {

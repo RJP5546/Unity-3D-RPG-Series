@@ -136,8 +136,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e8117d73887def499055d773139d974, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerNavMesh: {fileID: 4446796210351485000}
-  PlayerAnimator: {fileID: 8971840321281168336}
+  navMeshAgent: {fileID: 4446796210351485000}
+  animator: {fileID: 8971840321281168336}
+  health: {fileID: 7485086529385751830}
 --- !u!114 &6848067944688341109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,7 +178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f982a744e09a22b46b2dce89cfba345f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
+  healthPoints: 0
 --- !u!1001 &7119143348037138903
 PrefabInstance:
   m_ObjectHideFlags: 0

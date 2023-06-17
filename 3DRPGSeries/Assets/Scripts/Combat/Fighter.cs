@@ -16,8 +16,8 @@ namespace RPG.Combat
         //sets the damage of player attacks, will be replaced by weapon properties later
         Health target;
         //the Health component of the combat target, gives us acess to health methods (like IsDead()).
-        float timeSinceLastAttack;
-        //the time since the player last attacked
+        float timeSinceLastAttack = Mathf.Infinity;
+        //the time since the player last attacked, initialised as infinity so the first attack is always avalible without waiting
         private void Update()
         {
             timeSinceLastAttack += Time.deltaTime;
