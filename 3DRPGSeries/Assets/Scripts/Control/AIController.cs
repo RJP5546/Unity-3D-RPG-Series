@@ -49,6 +49,15 @@ namespace RPG.Control
             return distanceToPlayer < ChaseDistance;
             //returns if distanceToPlayer is less than ChaseDistance
         }
+
+        private void OnDrawGizmosSelected()
+            //Called by unity, for use in the editor, only shows when the object is selected
+        {
+            Gizmos.color = Color.blue;
+            //sets the sphere color to blue
+            Gizmos.DrawWireSphere(transform.position, ChaseDistance);
+            //draws a wire sphere that visualises the chase radius of the enemy
+        }
     }
 
 }
