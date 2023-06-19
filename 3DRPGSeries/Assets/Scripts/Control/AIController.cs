@@ -12,6 +12,8 @@ namespace RPG.Control
     {
         [SerializeField] float ChaseDistance = 5;
         //distance from the enemy that it will chase the player
+        [SerializeField] float suspicionTime = 5;
+        //Time since the object last saw the player that it will remain suspicious
         [SerializeField] Fighter fighter;
         //cache refrence to the fighter component
         [SerializeField] Health health;
@@ -23,6 +25,9 @@ namespace RPG.Control
 
         Vector3 guardPosition;
         //The vector3 location of where the AI is guarding, and should return to upon player leaving chase range.
+        float timeSinceLastSawPlayer = Mathf.Infinity;
+        //A float to keep track of how long it has been since the player was seen by the object.
+        //Initialized at infinity because the object has yet to see the player
 
         private void Start ()
         {
@@ -37,18 +42,43 @@ namespace RPG.Control
             if (health.IsDead()) { return; }
             //if the player is dead, do nothing
             if (InAttackRangeOfPlayer() && fighter.CanAttack(player))
-                //if the player is within the attack range, and the fighter component can attack player
+            //if the player is within the attack range, and the fighter component can attack player, enter attack state
             {
-                print(gameObject.name + "Should chase");
-                //prints the object that should be chasing the player. helpful for debugging
-                fighter.Attack(player);
+                timeSinceLastSawPlayer = 0f;
+                //reset the time since the player was last seen
+                AttackBehaviour();
+            }
+            else if(timeSinceLastSawPlayer < suspicionTime)
+            //if the player has left the attack and chase range, enter suspicion state
+            {
+                SuspicionBehaviour();
             }
             else
+            //if cannot attack, and no longer suspicious, move back to guard state
             {
-                mover.StartMoveAction(guardPosition);
-                //movement automatically cancels combat if the player leaves the attack range
-                //moves ai back to their post.
+                GuardBehaviour();
             }
+            timeSinceLastSawPlayer += Time.deltaTime;
+            //increments the time since the enemy last saw the player
+        }
+
+        private void GuardBehaviour()
+        {
+            mover.StartMoveAction(guardPosition);
+            //movement automatically cancels combat if the player leaves the attack range
+            //moves ai back to their post.
+        }
+
+        private void SuspicionBehaviour()
+        {
+            GetComponent<ActionScheduler>().CancelCurrentAction();
+            //stops the current action
+        }
+
+        private void AttackBehaviour()
+        {
+            fighter.Attack(player);
+            //Calls the Attack() method from the fighter script
         }
 
         private bool InAttackRangeOfPlayer()
