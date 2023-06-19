@@ -1,6 +1,7 @@
 using RPG.Combat;
 using RPG.Core;
 using RPG.Movement;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -10,10 +11,6 @@ namespace RPG.Control
 {
     public class AIController : MonoBehaviour
     {
-        [SerializeField] float ChaseDistance = 5;
-        //distance from the enemy that it will chase the player
-        [SerializeField] float suspicionTime = 5;
-        //Time since the object last saw the player that it will remain suspicious
         [SerializeField] Fighter fighter;
         //cache refrence to the fighter component
         [SerializeField] Health health;
@@ -22,12 +19,23 @@ namespace RPG.Control
         //cache refrence to the mover component
         [SerializeField] GameObject player;
         //cache refrence to the fighter component
+        [SerializeField] PatrolPath patrolPath;
+        //cache refrence to the objects patrol path, can be null
+        [SerializeField] float ChaseDistance = 5f;
+        //distance from the enemy that it will chase the player
+        [SerializeField] float suspicionTime = 5f;
+        //Time since the object last saw the player that it will remain suspicious
+        [SerializeField] float waypointTolerance = 1f;
+        //The level of variance in detecting if the object is at its target waypoint
+
 
         Vector3 guardPosition;
         //The vector3 location of where the AI is guarding, and should return to upon player leaving chase range.
         float timeSinceLastSawPlayer = Mathf.Infinity;
         //A float to keep track of how long it has been since the player was seen by the object.
         //Initialized at infinity because the object has yet to see the player
+        int currentWaypointIndex = 0;
+        //int that tracks what index of the patrol path the object is currently on
 
         private void Start ()
         {
@@ -56,17 +64,47 @@ namespace RPG.Control
             else
             //if cannot attack, and no longer suspicious, move back to guard state
             {
-                GuardBehaviour();
+                PatrolBehaviour();
             }
             timeSinceLastSawPlayer += Time.deltaTime;
             //increments the time since the enemy last saw the player
         }
 
-        private void GuardBehaviour()
+        private void PatrolBehaviour()
         {
-            mover.StartMoveAction(guardPosition);
+            Vector3 nextPosition = guardPosition;
+            //starts the next position as the guard position so the guard starts at the guard point
+            if (patrolPath != null)
+            {
+                if (AtWaypoint())
+                {
+                    CycleWaypoint();
+                }
+                nextPosition = GetCurrentWaypoint();
+            }
+            mover.StartMoveAction(nextPosition);
             //movement automatically cancels combat if the player leaves the attack range
             //moves ai back to their post.
+        }
+
+        private void CycleWaypoint()
+        {
+            currentWaypointIndex = patrolPath.GetNextIndex(currentWaypointIndex);
+            //calls GetNextIndex() method in PatrolPath, getting the next index in the list of waypoints.
+        }
+
+        private Vector3 GetCurrentWaypoint()
+        {
+            return patrolPath.GetWaypoint(currentWaypointIndex);
+            //calls the GetWaypoint() method in PatrolPath, and returns the index of the current waypoint
+        }
+
+        private bool AtWaypoint()
+        {
+            float distanceToWaypoint = Vector3.Distance(transform.position, GetCurrentWaypoint());
+            //sets the distance from the object to the waypoint as a float value
+            return distanceToWaypoint < waypointTolerance;
+            //returns if the object is close enough to be within the level of alloted tolerance, returns true or false.
         }
 
         private void SuspicionBehaviour()

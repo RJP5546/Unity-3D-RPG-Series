@@ -22,12 +22,12 @@ namespace RPG.Control
 
         }
 
-        private int GetNextIndex(int i)
+        public int GetNextIndex(int i)
         {
             return (i+1) % transform.childCount;
             //devide i+1 by the number of children, return the remaining. (modulo) giving us the next index, preventing indexOutOfRange error
         }
-        private Vector3 GetWaypoint(int i)
+        public Vector3 GetWaypoint(int i)
         {
             return transform.GetChild(i).position;
             //returns the location of the child waypoint at index i
