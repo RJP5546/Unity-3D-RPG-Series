@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 6594572380401677164}
   - component: {fileID: 8971840321281168336}
   - component: {fileID: 4446796210351485000}
+  - component: {fileID: 5915926916123214562}
   - component: {fileID: 762600126078145171}
   - component: {fileID: 6848067944688341109}
-  - component: {fileID: 5915926916123214562}
   - component: {fileID: 7485086529385751830}
   m_Layer: 0
   m_Name: Character
@@ -124,6 +124,18 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &5915926916123214562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6163010608809853589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 126624b925f1cda42a0c14539364a4a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &762600126078145171
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,8 +148,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e8117d73887def499055d773139d974, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerNavMesh: {fileID: 4446796210351485000}
-  PlayerAnimator: {fileID: 8971840321281168336}
+  navMeshAgent: {fileID: 4446796210351485000}
+  animator: {fileID: 8971840321281168336}
+  health: {fileID: 7485086529385751830}
 --- !u!114 &6848067944688341109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,18 +166,6 @@ MonoBehaviour:
   weaponRange: 2
   TimeBetweenAttacks: 2
   WeaponDamage: 5
---- !u!114 &5915926916123214562
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6163010608809853589}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 126624b925f1cda42a0c14539364a4a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &7485086529385751830
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,7 +178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f982a744e09a22b46b2dce89cfba345f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
+  healthPoints: 0
 --- !u!1001 &7119143348037138903
 PrefabInstance:
   m_ObjectHideFlags: 0

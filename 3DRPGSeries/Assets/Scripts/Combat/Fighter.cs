@@ -16,8 +16,8 @@ namespace RPG.Combat
         //sets the damage of player attacks, will be replaced by weapon properties later
         Health target;
         //the Health component of the combat target, gives us acess to health methods (like IsDead()).
-        float timeSinceLastAttack;
-        //the time since the player last attacked
+        float timeSinceLastAttack = Mathf.Infinity;
+        //the time since the player last attacked, initialised as infinity so the first attack is always avalible without waiting
         private void Update()
         {
             timeSinceLastAttack += Time.deltaTime;
@@ -81,7 +81,7 @@ namespace RPG.Combat
             //if the distance between self, and target position is in range, set true.
         }
 
-        public void Attack(CombatTarget combatTarget)
+        public void Attack(GameObject combatTarget)
         {
             GetComponent<ActionScheduler>().StartAction(this);
             //Starts the attack action
@@ -107,7 +107,7 @@ namespace RPG.Combat
             //cancels any attack animation and return to locomotion
         }
 
-        public bool CanAttack(CombatTarget combatTarget)
+        public bool CanAttack(GameObject combatTarget)
         {
             if(combatTarget == null) { return false; }
             //if there is no target, object cannot attack it

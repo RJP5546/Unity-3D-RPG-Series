@@ -1,4 +1,5 @@
 using RPG.Combat;
+using RPG.Core;
 using RPG.Movement;
 using System;
 using System.Collections;
@@ -14,9 +15,17 @@ namespace RPG.Control
     {
         [SerializeField] Mover PlayerMover;
         //set the component that we are using as the player navmesh
+        [SerializeField] Health health;
+        //cache refrence to the health component
 
+        private void Start()
+        {
+            health = GetComponent<Health>();
+        }
         private void Update()
         {
+            if (health.IsDead()) { return; }
+            //if the player is dead, do nothing
             if (InteractWithCombat()) { return; }
             //if InteractWithCombat is true, ignore movement.
             if (InteractWithMovement()) { return; }
@@ -33,11 +42,13 @@ namespace RPG.Control
             {
                 CombatTarget target = hit.transform.GetComponent<CombatTarget>();
                 //every object has a transform component, and a component can see any other sibling component on an object
-                if (!GetComponent<Fighter>().CanAttack(target)) { continue; }
+                if (target == null) {continue; }
+                //if there is no combat target, make it not clickable
+                if (!GetComponent<Fighter>().CanAttack(target.gameObject)) { continue; }
                 //if we cant attack,conntine in the foreach loop (going to the next thing in array)
-                if(Input.GetMouseButtonDown(0)) 
+                if(Input.GetMouseButton(0)) 
                 {
-                    GetComponent<Fighter>().Attack(target);
+                    GetComponent<Fighter>().Attack(target.gameObject);
                 }
                 return true;
                 //returns true even for hovering over a target
