@@ -155,11 +155,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 065e42be249ff9e4aafbd8ccb1596f94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ChaseDistance: 5
   fighter: {fileID: 6546774870686793352}
   health: {fileID: 7076199584305204203}
   mover: {fileID: 1100747803448081518}
   player: {fileID: 0}
+  patrolPath: {fileID: 0}
+  ChaseDistance: 5
+  suspicionTime: 5
+  waypointTolerance: 1
+  waypointDwellTime: 3
 --- !u!114 &6546774870686793352 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6848067944688341109, guid: c27a5069370f9d84095da0545d107929, type: 3}

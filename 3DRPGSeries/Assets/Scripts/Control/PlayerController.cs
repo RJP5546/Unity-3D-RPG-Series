@@ -46,7 +46,7 @@ namespace RPG.Control
                 //if there is no combat target, make it not clickable
                 if (!GetComponent<Fighter>().CanAttack(target.gameObject)) { continue; }
                 //if we cant attack,conntine in the foreach loop (going to the next thing in array)
-                if(Input.GetMouseButtonDown(0)) 
+                if(Input.GetMouseButton(0)) 
                 {
                     GetComponent<Fighter>().Attack(target.gameObject);
                 }

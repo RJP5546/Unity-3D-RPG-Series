@@ -26,7 +26,9 @@ namespace RPG.Control
         [SerializeField] float suspicionTime = 5f;
         //Time since the object last saw the player that it will remain suspicious
         [SerializeField] float waypointTolerance = 1f;
-        //The level of variance in detecting if the object is at its target waypoint
+        //The level of variance in detecting if the object is at its target waypoint 
+        [SerializeField] float waypointDwellTime = 1f;
+        //Time the object will dwell at at patrol point 
 
 
         Vector3 guardPosition;
@@ -36,6 +38,8 @@ namespace RPG.Control
         //Initialized at infinity because the object has yet to see the player
         int currentWaypointIndex = 0;
         //int that tracks what index of the patrol path the object is currently on
+        float timeSinceArrivedAtWaypoint = Mathf.Infinity;
+        //A float to keep track of how long it has been since the object has arrived at its current waypoint.
 
         private void Start ()
         {
@@ -52,11 +56,9 @@ namespace RPG.Control
             if (InAttackRangeOfPlayer() && fighter.CanAttack(player))
             //if the player is within the attack range, and the fighter component can attack player, enter attack state
             {
-                timeSinceLastSawPlayer = 0f;
-                //reset the time since the player was last seen
                 AttackBehaviour();
             }
-            else if(timeSinceLastSawPlayer < suspicionTime)
+            else if (timeSinceLastSawPlayer < suspicionTime)
             //if the player has left the attack and chase range, enter suspicion state
             {
                 SuspicionBehaviour();
@@ -66,8 +68,15 @@ namespace RPG.Control
             {
                 PatrolBehaviour();
             }
+            UpdateTimers();
+        }
+
+        private void UpdateTimers()
+        {
             timeSinceLastSawPlayer += Time.deltaTime;
             //increments the time since the enemy last saw the player
+            timeSinceArrivedAtWaypoint += Time.deltaTime;
+            //increments the time since the object arrived at the current waypoint
         }
 
         private void PatrolBehaviour()
@@ -78,13 +87,17 @@ namespace RPG.Control
             {
                 if (AtWaypoint())
                 {
+                    timeSinceArrivedAtWaypoint = 0f;
                     CycleWaypoint();
                 }
                 nextPosition = GetCurrentWaypoint();
             }
-            mover.StartMoveAction(nextPosition);
-            //movement automatically cancels combat if the player leaves the attack range
-            //moves ai back to their post.
+            if(timeSinceArrivedAtWaypoint > waypointDwellTime) 
+            {
+                mover.StartMoveAction(nextPosition);
+                //movement automatically cancels combat if the player leaves the attack range
+                //moves ai back to their post.
+            }
         }
 
         private void CycleWaypoint()
@@ -115,6 +128,8 @@ namespace RPG.Control
 
         private void AttackBehaviour()
         {
+            timeSinceLastSawPlayer = 0f;
+            //reset the time since the player was last seen
             fighter.Attack(player);
             //Calls the Attack() method from the fighter script
         }
