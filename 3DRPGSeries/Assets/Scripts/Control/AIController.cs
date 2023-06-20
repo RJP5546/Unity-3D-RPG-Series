@@ -28,7 +28,11 @@ namespace RPG.Control
         [SerializeField] float waypointTolerance = 1f;
         //The level of variance in detecting if the object is at its target waypoint 
         [SerializeField] float waypointDwellTime = 1f;
-        //Time the object will dwell at at patrol point 
+        //Time the object will dwell at at patrol point
+        [Range(0f, 1f)]
+        //the range of patrolSpeedFraction can only be between 0, and 1
+        [SerializeField] float patrolSpeedFraction = 0.2f;
+        //The multiplier applied to the max speed of the navmesh agent during patroling
 
 
         Vector3 guardPosition;
@@ -94,9 +98,9 @@ namespace RPG.Control
             }
             if(timeSinceArrivedAtWaypoint > waypointDwellTime) 
             {
-                mover.StartMoveAction(nextPosition);
+                mover.StartMoveAction(nextPosition, patrolSpeedFraction);
                 //movement automatically cancels combat if the player leaves the attack range
-                //moves ai back to their post.
+                //moves ai back to their post, passes patrolSpeedFraction to their NavMesh Agent
             }
         }
 

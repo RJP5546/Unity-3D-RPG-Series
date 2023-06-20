@@ -70,8 +70,8 @@ namespace RPG.Control
                 if (Input.GetMouseButton(0))
                 //GetMouseButton is true while the button is held,GetMouseButtonDown is true when pressed, must be pressed again to trigger again
                 {
-                    PlayerMover.StartMoveAction(hit.point);
-                    //passes the point where the ray hits an object as a vector3
+                    PlayerMover.StartMoveAction(hit.point, 1f);
+                    //passes the point where the ray hits an object as a vector3, as well as player full speed
                 }
                 return true;
                 //if the ray finds an object the player can interact with, return true

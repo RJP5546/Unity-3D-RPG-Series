@@ -28,8 +28,8 @@ namespace RPG.Combat
             if (target != null && !GetIsInRange())
             //putting the GetIsInRange after target != null, this prevents null refrence error, as the function will only be called if there is a target
             {
-                GetComponent<Mover>().MoveTo(target.transform.position);
-                //move to the target
+                GetComponent<Mover>().MoveTo(target.transform.position, 1f);
+                //move to the target, pass full speed fraction
             }
             //if the fighter has an active target and is in range, move to the target
             else
@@ -96,6 +96,8 @@ namespace RPG.Combat
             StopAttack();
             target = null;
             //set current target to null
+            GetComponent<Mover>().Cancel();
+            //stop moving to the target
         }
 
         private void StopAttack()
