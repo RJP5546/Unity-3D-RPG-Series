@@ -2,6 +2,7 @@ using RPG.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -16,6 +17,9 @@ namespace RPG.Movement
         //set the component that we are using as the object animator
         [SerializeField] Health health;
         //set the component that we are using as the object health
+        [SerializeField] float maxSpeed = 5.66f;
+        //set the max speed float
+
         private readonly int ForwardSpeedHash = Animator.StringToHash("ForwardSpeed");
         //store ForwardSpeed animator value as a hash for faster refrence
 
@@ -27,20 +31,22 @@ namespace RPG.Movement
             UpdateAnimator();
         }
 
-        public void StartMoveAction(Vector3 destination)
+        public void StartMoveAction(Vector3 destination, float speedFraction)
         {
             GetComponent<ActionScheduler>().StartAction(this);
-            MoveTo(destination);
+            MoveTo(destination, speedFraction);
         }
 
 
 
-        public void MoveTo(Vector3 destination)
+        public void MoveTo(Vector3 destination, float speedFraction)
         {
             navMeshAgent.isStopped = false;
             //enables player movement
             navMeshAgent.destination = destination;
             //sets the players navmesh agent destination to the point where the ray hits an object
+            navMeshAgent.speed = maxSpeed * Mathf.Clamp01(speedFraction);
+            //sets the nav mesh agent speed to max * any fraction multiplier. Clamp01() restricts the input var to between 0 and 1.
         }
         public void Cancel()
         {
