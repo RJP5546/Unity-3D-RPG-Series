@@ -1432,6 +1432,10 @@ PrefabInstance:
       propertyPath: spawnPoint
       value: 
       objectReference: {fileID: 502425930}
+    - target: {fileID: 1245054681589711704, guid: 8420566031a823a42803e939432a1d55, type: 3}
+      propertyPath: destination
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3170090141158695397, guid: 8420566031a823a42803e939432a1d55, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.39
@@ -1450,7 +1454,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5458643700609152712, guid: 8420566031a823a42803e939432a1d55, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5458643700609152712, guid: 8420566031a823a42803e939432a1d55, type: 3}
       propertyPath: m_LocalPosition.x

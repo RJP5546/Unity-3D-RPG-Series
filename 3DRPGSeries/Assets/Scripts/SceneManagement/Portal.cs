@@ -8,11 +8,18 @@ namespace RPG.SceneManagement
 {
     public class Portal : MonoBehaviour
     {
+        enum DestinationIdentifier
+        {
+            A,B,C,D,E,F,G,H
+        }
+
         [SerializeField] int sceneToLoad;
         //set the int for the scene to load from the build index
         [SerializeField] Transform spawnPoint;
         //set the transform component of the spawn point gameobject
-        
+        [SerializeField] DestinationIdentifier destination;
+        //set the destination target
+
 
         private void OnTriggerEnter(Collider other)
         {
@@ -57,6 +64,8 @@ namespace RPG.SceneManagement
             {
                 if (portal == this) { continue; }
                 //if the portal is the current portal, continue to the next portal in the list
+                if (portal.destination != destination) { continue; }
+                //if the destination portal is the current portal, continue to the next portal in the list
                 return portal;
                 //return the portal
             }
