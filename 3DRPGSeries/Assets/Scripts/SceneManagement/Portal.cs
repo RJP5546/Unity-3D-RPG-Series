@@ -16,9 +16,20 @@ namespace RPG.SceneManagement
             if(other.tag == "Player")
                 //if the player collides with the trigger
             {
-                SceneManager.LoadScene(sceneToLoad);
-                //loads next scene based off of load index value inputted
+                StartCoroutine(Transition());
+                //start the Transition() coroutine
             }
+        }
+        private IEnumerator Transition()
+        {
+            DontDestroyOnLoad(gameObject);
+            //dont destroy the portal game object on load
+            yield return SceneManager.LoadSceneAsync(sceneToLoad);
+            //loads next scene based off of load index value inputted, returns async operation when the scene has finished loading,
+            //calling the coroutine again.
+            print("Scene Loaded");
+            Destroy(gameObject);
+            //destroys portal when its no longer needed, preventing unwanted overlap
         }
     }
 }
