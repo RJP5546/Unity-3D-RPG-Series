@@ -19,6 +19,12 @@ namespace RPG.SceneManagement
         //set the transform component of the spawn point gameobject
         [SerializeField] DestinationIdentifier destination;
         //set the destination target
+        [SerializeField] float fadeOutTime = 2f;
+        //set the time for the screen fade out
+        [SerializeField] float fadeWaitTime = 0.5f;
+        //set the time to wait before fading the screen back in
+        [SerializeField] float fadeInTime = 1f;
+        //set the time for the screen fade in
 
 
         private void OnTriggerEnter(Collider other)
@@ -34,14 +40,25 @@ namespace RPG.SceneManagement
         {
             DontDestroyOnLoad(gameObject);
             //dont destroy the portal game object on load
+
+            Fader fader = GameObject.FindObjectOfType<Fader>();
+            //finds the fader GameObject
+            yield return fader.FadeOut(fadeOutTime);
+            //fade the screen out
+
             yield return SceneManager.LoadSceneAsync(sceneToLoad);
             //loads next scene based off of load index value inputted, returns async operation when the scene has finished loading,
             //calling the coroutine again.
-            print("Scene Loaded");
 
             Portal otherPortal = GetOtherPortal();
+            //get a local refrence to the destination portal
             UpdatePlayer(otherPortal);
+            //set the player location and rotation to that of the portals spawn point
 
+            yield return new WaitForSeconds(fadeWaitTime);
+            //pause to let all the cameras and player objects find their correct posititon
+            yield return fader.FadeIn(fadeInTime);
+            //fade the screen back in
 
             Destroy(gameObject);
             //destroys portal when its no longer needed, preventing unwanted overlap

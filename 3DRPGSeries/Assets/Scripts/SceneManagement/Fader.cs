@@ -12,19 +12,6 @@ namespace RPG.SceneManagement
         {
             canvasGroup = GetComponent<CanvasGroup>();
             //gets the canvas group component and assigns it as a local variable.
-            StartCoroutine(FadeOutIn());
-            //Calls the FadeOutIn() Function, fading the screen out and in
-        }
-
-        public IEnumerator FadeOutIn()
-            //nested coroutines to fade out and in
-        {
-            yield return FadeOut(3f);
-            //fades out, waits for a return call
-            print("Faded out");
-            yield return FadeIn(1.5f);
-            //fades in after the fade out and print have completed
-            print("Faded in");
         }
 
         public IEnumerator FadeOut(float time)
