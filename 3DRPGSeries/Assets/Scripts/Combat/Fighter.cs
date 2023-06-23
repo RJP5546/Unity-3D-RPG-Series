@@ -14,18 +14,20 @@ namespace RPG.Combat
         //sets the delay between player attacks, will be replaced by weapon properties later
         [SerializeField] Transform handTransform = null;
         //transform of the players hand that the weapon will be attaching to
-        [SerializeField] Weapon weapon = null;
+        [SerializeField] Weapon defaultWeapon = null;
         //initialise the equipped weapon as null, can be assigned later
         
         Health target;
         //the Health component of the combat target, gives us acess to health methods (like IsDead()).
         float timeSinceLastAttack = Mathf.Infinity;
         //the time since the player last attacked, initialised as infinity so the first attack is always avalible without waiting
+        Weapon currentWeapon = null;
+        //track the players current weapon
 
         private void Start()
         {
-            SpawnWeapon();
-            //spawn the weapon in the players hand at the start
+            EquipWeapon(defaultWeapon);
+            //spawn the default weapon in the players hand at the start
         }
 
 
@@ -51,10 +53,10 @@ namespace RPG.Combat
             }
         }
 
-        private void SpawnWeapon()
+        public void EquipWeapon(Weapon weapon)
         {
-            if(weapon == null) { return; }
-            //if there is no weapon, return
+            currentWeapon = weapon;
+            //set the current weapon
             Animator animator = GetComponent<Animator>();
             //gets local refrence to the animator
             weapon.Spawn(handTransform, animator);
@@ -92,13 +94,13 @@ namespace RPG.Combat
         {
             if(target == null) { return; }
             //if there is no target when the event triggers, return null to prevent error
-            target.TakeDamage(weapon.GetDamage());
+            target.TakeDamage(currentWeapon.GetDamage());
             //makes the healthPoints component take the desired amount of damage
         }
 
         private bool GetIsInRange()
         {
-            return Vector3.Distance(transform.position, target.transform.position) < weapon.GetRange();
+            return Vector3.Distance(transform.position, target.transform.position) < currentWeapon.GetRange();
             //if the distance between self, and target position is in range, set true.
         }
 
