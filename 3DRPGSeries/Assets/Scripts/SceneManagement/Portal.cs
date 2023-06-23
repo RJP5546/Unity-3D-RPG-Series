@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 
 namespace RPG.SceneManagement
@@ -43,17 +44,28 @@ namespace RPG.SceneManagement
 
             Fader fader = GameObject.FindObjectOfType<Fader>();
             //finds the fader GameObject
+            SavingWrapper savingWrapper = FindObjectOfType<SavingWrapper>();
+            //finds the saving wrapper component
             yield return fader.FadeOut(fadeOutTime);
             //fade the screen out
+
+            savingWrapper.Save();
+            //saves the scene as you exit
 
             yield return SceneManager.LoadSceneAsync(sceneToLoad);
             //loads next scene based off of load index value inputted, returns async operation when the scene has finished loading,
             //calling the coroutine again.
 
+            savingWrapper.Load();
+            //load data from the save
+
             Portal otherPortal = GetOtherPortal();
             //get a local refrence to the destination portal
             UpdatePlayer(otherPortal);
             //set the player location and rotation to that of the portals spawn point
+
+            savingWrapper.Save();
+            //saves the scene with the new players location, preventing getting stuck in portals
 
             yield return new WaitForSeconds(fadeWaitTime);
             //pause to let all the cameras and player objects find their correct posititon
@@ -68,10 +80,14 @@ namespace RPG.SceneManagement
         {
             GameObject player = GameObject.FindWithTag("Player");
             //create a refrence to the player game object
+            player.GetComponent<NavMeshAgent>().enabled = false;
+            //reference to the player nav mesh agent
             player.transform.position = otherPortal.spawnPoint.position;
             //set the player transform to the transform of the spawnpoint
             player.transform.rotation = otherPortal.spawnPoint.rotation;
             //set the player rotation to the rotation of the spawnpoint
+            player.GetComponent<NavMeshAgent>().enabled = true;
+            //reenable the player nav mesh agent
         }
 
         private Portal GetOtherPortal()

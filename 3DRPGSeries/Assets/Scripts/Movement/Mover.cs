@@ -1,4 +1,6 @@
+using Newtonsoft.Json.Linq;
 using RPG.Core;
+using RPG.Saving;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +11,7 @@ using UnityEngine.AI;
 namespace RPG.Movement
 //core namespaces apply to Movement scripts
 {
-    public class Mover : MonoBehaviour, IAction
+    public class Mover : MonoBehaviour, IAction, IJsonSaveable
     {
         [SerializeField] NavMeshAgent navMeshAgent;
         //set the component that we are using as the object navmesh
@@ -67,5 +69,19 @@ namespace RPG.Movement
             //Sets the animators speed value to the value of float speed
 
         }
+
+        public JToken CaptureAsJToken()
+        {
+            return transform.position.ToToken();
+        }
+
+        public void RestoreFromJToken(JToken state)
+        {
+            navMeshAgent.enabled = false;
+            transform.position = state.ToVector3();
+            navMeshAgent.enabled = true;
+            GetComponent<ActionScheduler>().CancelCurrentAction();
+        }
+
     }
 }
