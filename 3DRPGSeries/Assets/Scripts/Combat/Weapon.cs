@@ -1,3 +1,4 @@
+using RPG.Core;
 using UnityEngine;
 
 namespace RPG.Combat
@@ -16,23 +17,35 @@ namespace RPG.Combat
         //sets the damage of player attacks, will be replaced by weapon properties later
         [SerializeField] bool isRightHanded = true;
         //set if the weapon is left or right handed
-
+        [SerializeField] Projectile projectile = null;
+        //sets the weapons projectile
         public void Spawn(Transform rightHand,Transform leftHand, Animator animator)
         {
             if(equippedPrefab != null)
             {
-                Transform handTransform;
-                if(isRightHanded) { handTransform = rightHand; }
-                else { handTransform = leftHand; }
-                //sets if the weapon needs to spawn in the left or right hand
+                Transform handTransform = GetTransform(rightHand, leftHand);
                 Instantiate(equippedPrefab, handTransform);
                 //instantiates the equipped weapon at the set hand transform
             }
-            if(animatorOverride != null)
+            if (animatorOverride != null)
             {
                 animator.runtimeAnimatorController = animatorOverride;
                 //changes the animator controller to the animatorOverride controller
             }
+        }
+
+        public bool HasProjectile()
+        {
+            return projectile != null;
+            //lets us know if we have a projectile equipped
+        }
+
+        public void LaunchProjectile(Transform rightHand, Transform leftHand, Health target)
+        {
+            Projectile projectileInstance = Instantiate(projectile, GetTransform(rightHand, leftHand).position, Quaternion.identity);
+            //creates a projectile from the proper hand and rotation
+            projectileInstance.SetTarget(target);
+            //sets the target for the projectile
         }
         
         public float GetRange()
@@ -42,6 +55,15 @@ namespace RPG.Combat
         public float GetDamage()
         {
             return weaponDamage;
+        }
+
+        private Transform GetTransform(Transform rightHand, Transform leftHand)
+        {
+            Transform handTransform;
+            if (isRightHanded) { handTransform = rightHand; }
+            else { handTransform = leftHand; }
+            //sets if the weapon needs to spawn in the left or right hand
+            return handTransform;
         }
     }
 }

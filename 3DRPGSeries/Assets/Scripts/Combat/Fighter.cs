@@ -96,8 +96,23 @@ namespace RPG.Combat
         {
             if(target == null) { return; }
             //if there is no target when the event triggers, return null to prevent error
-            target.TakeDamage(currentWeapon.GetDamage());
-            //makes the healthPoints component take the desired amount of damage
+            if (currentWeapon.HasProjectile())
+            {
+                currentWeapon.LaunchProjectile(rightHandTransform, leftHandTransform, target);
+                //if the current weapon has a projectile, launch it (not hit the enemy event, its the animation trigger event)
+            }
+            else 
+            {
+                target.TakeDamage(currentWeapon.GetDamage());
+                //makes the healthPoints component take the desired amount of damage 
+            }
+
+        }
+
+        void Shoot()
+            //trigger on bow animation attack, only here because we cant change the name in the animation
+        {
+            Hit();
         }
 
         private bool GetIsInRange()
