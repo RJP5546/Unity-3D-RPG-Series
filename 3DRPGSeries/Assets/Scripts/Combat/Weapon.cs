@@ -1,4 +1,5 @@
 using RPG.Core;
+using System;
 using UnityEngine;
 
 namespace RPG.Combat
@@ -19,19 +20,45 @@ namespace RPG.Combat
         //set if the weapon is left or right handed
         [SerializeField] Projectile projectile = null;
         //sets the weapons projectile
+
+        const string weaponName = "Weapon";
+        //sets a constant string name to make refrence easy and consistant
+
         public void Spawn(Transform rightHand,Transform leftHand, Animator animator)
         {
+            DesroyOldWeapon(rightHand, leftHand);
+
             if(equippedPrefab != null)
             {
                 Transform handTransform = GetTransform(rightHand, leftHand);
-                Instantiate(equippedPrefab, handTransform);
+                GameObject weapon = Instantiate(equippedPrefab, handTransform);
                 //instantiates the equipped weapon at the set hand transform
+                weapon.name = weaponName;
+                //sets the name component of the weapon
             }
             if (animatorOverride != null)
             {
                 animator.runtimeAnimatorController = animatorOverride;
                 //changes the animator controller to the animatorOverride controller
             }
+        }
+
+        private void DesroyOldWeapon(Transform rightHand, Transform leftHand)
+        {
+            Transform oldWeapon = rightHand.Find(weaponName);
+            //searches the right hand for the weapon name
+            if(oldWeapon == null)
+            {
+                oldWeapon = leftHand.Find(weaponName);
+                //not in the right hand, check the left
+            }
+            if (oldWeapon == null) { return; }
+            //no weapon in either hand
+
+            oldWeapon.name = "DESTROYING";
+            //prevents confusion between picked up weapon and old weapon, prevents potential buggs
+            Destroy(oldWeapon.gameObject);
+            //if the weapon was found, destroy it
         }
 
         public bool HasProjectile()
