@@ -14,11 +14,17 @@ namespace RPG.Combat
         //sets the players weapon range, or the distance away from the enemy that the player stops to attack.
         [SerializeField] float weaponDamage = 5f;
         //sets the damage of player attacks, will be replaced by weapon properties later
+        [SerializeField] bool isRightHanded = true;
+        //set if the weapon is left or right handed
 
-        public void Spawn(Transform handTransform, Animator animator)
+        public void Spawn(Transform rightHand,Transform leftHand, Animator animator)
         {
             if(equippedPrefab != null)
             {
+                Transform handTransform;
+                if(isRightHanded) { handTransform = rightHand; }
+                else { handTransform = leftHand; }
+                //sets if the weapon needs to spawn in the left or right hand
                 Instantiate(equippedPrefab, handTransform);
                 //instantiates the equipped weapon at the set hand transform
             }
