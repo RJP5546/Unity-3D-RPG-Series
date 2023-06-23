@@ -7,7 +7,12 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     [SerializeField] float speed = 1.0f;
+    //projectile speed
     [SerializeField] bool isHoming = true;
+    //if the projectile tracks a taret or not
+    [SerializeField] GameObject hitEffect = null;
+    //if the game object has an effect to play on hit, attach it here
+
 
     Health target = null;
     //the target for the projectile
@@ -62,6 +67,12 @@ public class Projectile : MonoBehaviour
         //if the target is dead, dont deal damage and dont destroy the projectile
         target.TakeDamage(damage);
         //if it is the right target, deal damage
+
+        if(hitEffect != null)
+        {
+            Instantiate(hitEffect, GetAimLocation(), transform.rotation);
+        }
+
         Destroy(gameObject);
         //destroy the shot projectile
     }
