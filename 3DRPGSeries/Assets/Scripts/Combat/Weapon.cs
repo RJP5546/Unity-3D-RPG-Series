@@ -8,15 +8,34 @@ namespace RPG.Combat
     {
         [SerializeField] AnimatorOverrideController animatorOverride = null;
         //component that will override the players animations into the animations of the weapon class
-        [SerializeField] GameObject weaponPrefab = null;
+        [SerializeField] GameObject equippedPrefab = null;
         //prefab for equipped weapon
+        [SerializeField] float weaponRange = 2f;
+        //sets the players weapon range, or the distance away from the enemy that the player stops to attack.
+        [SerializeField] float weaponDamage = 5f;
+        //sets the damage of player attacks, will be replaced by weapon properties later
 
         public void Spawn(Transform handTransform, Animator animator)
         {
-            Instantiate(weaponPrefab, handTransform);
-            //instantiates the weapon at the set hand transform
-            animator.runtimeAnimatorController = animatorOverride;
-            //changes the animator controller to the animatorOverride controller
+            if(equippedPrefab != null)
+            {
+                Instantiate(equippedPrefab, handTransform);
+                //instantiates the equipped weapon at the set hand transform
+            }
+            if(animatorOverride != null)
+            {
+                animator.runtimeAnimatorController = animatorOverride;
+                //changes the animator controller to the animatorOverride controller
+            }
+        }
+        
+        public float GetRange()
+        {
+            return weaponRange;
+        }
+        public float GetDamage()
+        {
+            return weaponDamage;
         }
     }
 }

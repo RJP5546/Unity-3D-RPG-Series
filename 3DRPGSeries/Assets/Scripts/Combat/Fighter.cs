@@ -9,12 +9,9 @@ namespace RPG.Combat
 {
     public class Fighter : MonoBehaviour, IAction
     {
-        [SerializeField] float weaponRange = 2f;
-        //sets the players weapon range, or the distance away from the enemy that the player stops to attack.
+        
         [SerializeField] float TimeBetweenAttacks;
         //sets the delay between player attacks, will be replaced by weapon properties later
-        [SerializeField] float WeaponDamage;
-        //sets the damage of player attacks, will be replaced by weapon properties later
         [SerializeField] Transform handTransform = null;
         //transform of the players hand that the weapon will be attaching to
         [SerializeField] Weapon weapon = null;
@@ -95,13 +92,13 @@ namespace RPG.Combat
         {
             if(target == null) { return; }
             //if there is no target when the event triggers, return null to prevent error
-            target.TakeDamage(WeaponDamage);
+            target.TakeDamage(weapon.GetDamage());
             //makes the healthPoints component take the desired amount of damage
         }
 
         private bool GetIsInRange()
         {
-            return Vector3.Distance(transform.position, target.transform.position) < weaponRange;
+            return Vector3.Distance(transform.position, target.transform.position) < weapon.GetRange();
             //if the distance between self, and target position is in range, set true.
         }
 
