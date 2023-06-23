@@ -44,8 +44,8 @@ namespace RPG.Combat
         {
             Projectile projectileInstance = Instantiate(projectile, GetTransform(rightHand, leftHand).position, Quaternion.identity);
             //creates a projectile from the proper hand and rotation
-            projectileInstance.SetTarget(target);
-            //sets the target for the projectile
+            projectileInstance.SetTarget(target, weaponDamage);
+            //sets the target for the projectile and its damage
         }
         
         public float GetRange()
