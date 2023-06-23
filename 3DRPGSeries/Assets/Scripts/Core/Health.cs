@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json.Linq;
+using RPG.Saving;
 
 namespace RPG.Core 
 {
-    public class Health : MonoBehaviour
+    public class Health : MonoBehaviour, IJsonSaveable
     {
         [SerializeField] float healthPoints;
         //set the healthPoints value in the inspector, will be changed based on stats later
@@ -38,6 +40,19 @@ namespace RPG.Core
             //playes the death animation
             GetComponent<ActionScheduler>().CancelCurrentAction();
             //stops the current action
+        }
+
+        public JToken CaptureAsJToken()
+        {
+            return JToken.FromObject(healthPoints);
+        }
+        public void RestoreFromJToken(JToken state)
+        {
+            healthPoints = state.ToObject<float>();
+            if (healthPoints <= 0f)
+            {
+                Die();
+            }
         }
     }
 }
