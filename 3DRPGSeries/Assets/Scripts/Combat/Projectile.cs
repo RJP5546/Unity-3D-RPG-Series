@@ -7,17 +7,28 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     [SerializeField] float speed = 1.0f;
+    [SerializeField] bool isHoming = true;
 
     Health target = null;
     //the target for the projectile
     float damage = 0;
     //projectile damage
+
+    private void Start()
+    {
+        transform.LookAt(GetAimLocation());
+        //look at the projectiles target
+    }
+
     void Update()
     {
         if(target == null) {  return; }
         //if no target, return
-        transform.LookAt(GetAimLocation());
-        //look at the projectiles target
+        if(isHoming && !target.IsDead())
+        {
+            transform.LookAt(GetAimLocation());
+            //look at the projectiles target
+        }
         transform.Translate(Vector3.forward * speed * Time.deltaTime);
         //moves the projectile on the z axis at a set speed over time
 
@@ -47,6 +58,8 @@ public class Projectile : MonoBehaviour
     {
         if(other.GetComponent<Health>() != target) {return;}
         //if the object hit is not our target, ignore
+        if (target.IsDead()) { return; }
+        //if the target is dead, dont deal damage and dont destroy the projectile
         target.TakeDamage(damage);
         //if it is the right target, deal damage
         Destroy(gameObject);
