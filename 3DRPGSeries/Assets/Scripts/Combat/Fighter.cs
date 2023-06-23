@@ -1,5 +1,6 @@
 using RPG.Core;
 using RPG.Movement;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,10 +15,22 @@ namespace RPG.Combat
         //sets the delay between player attacks, will be replaced by weapon properties later
         [SerializeField] float WeaponDamage;
         //sets the damage of player attacks, will be replaced by weapon properties later
+        [SerializeField] GameObject weaponPrefab = null;
+        //prefab for equipped weapon
+        [SerializeField] Transform handTransform = null;
+        //transform of the players hand that the weapon will be attaching to
         Health target;
         //the Health component of the combat target, gives us acess to health methods (like IsDead()).
         float timeSinceLastAttack = Mathf.Infinity;
         //the time since the player last attacked, initialised as infinity so the first attack is always avalible without waiting
+
+        private void Start()
+        {
+            SpawnWeapon();
+            //spawn the weapon in the players hand at the start
+        }
+
+
         private void Update()
         {
             timeSinceLastAttack += Time.deltaTime;
@@ -38,6 +51,12 @@ namespace RPG.Combat
                 //stop moving to the target
                 AttackBehavior();
             }
+        }
+
+        private void SpawnWeapon()
+        {
+            Instantiate(weaponPrefab, handTransform);
+            //instantiates the weapon at the set players hand transform
         }
 
         private void AttackBehavior()
