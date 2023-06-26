@@ -1,23 +1,45 @@
+using Newtonsoft.Json.Linq;
 using RPG.Core;
 using RPG.Movement;
+using RPG.Saving;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace RPG.Combat
 {
-    public class Fighter : MonoBehaviour, IAction
+    public class Fighter : MonoBehaviour, IAction, IJsonSaveable
     {
-        [SerializeField] float weaponRange = 2f;
-        //sets the players weapon range, or the distance away from the enemy that the player stops to attack.
+        
         [SerializeField] float TimeBetweenAttacks;
         //sets the delay between player attacks, will be replaced by weapon properties later
-        [SerializeField] float WeaponDamage;
-        //sets the damage of player attacks, will be replaced by weapon properties later
+        [SerializeField] Transform rightHandTransform = null;
+        //transform of the players right hand that the weapon will be attaching to
+        [SerializeField] Transform leftHandTransform = null;
+        //transform of the players left hand that the weapon will be attaching to
+        [SerializeField] Weapon defaultWeapon = null;
+        //initialise the equipped weapon as null, can be assigned later
+
+        
         Health target;
         //the Health component of the combat target, gives us acess to health methods (like IsDead()).
         float timeSinceLastAttack = Mathf.Infinity;
         //the time since the player last attacked, initialised as infinity so the first attack is always avalible without waiting
+        Weapon currentWeapon = null;
+        //track the players current weapon
+
+        private void Start()
+        {
+            if (currentWeapon == null)
+            {
+                EquipWeapon(defaultWeapon);
+                //spawn the default weapon in the players hand at the start if the save system does not have a saved weapon
+            }
+
+        }
+
+
         private void Update()
         {
             timeSinceLastAttack += Time.deltaTime;
@@ -38,6 +60,16 @@ namespace RPG.Combat
                 //stop moving to the target
                 AttackBehavior();
             }
+        }
+
+        public void EquipWeapon(Weapon weapon)
+        {
+            currentWeapon = weapon;
+            //set the current weapon
+            Animator animator = GetComponent<Animator>();
+            //gets local refrence to the animator
+            weapon.Spawn(rightHandTransform, leftHandTransform, animator);
+            //tell the weapon class to spawn the weapon, passes the hand transform and animator for the object
         }
 
         private void AttackBehavior()
@@ -71,13 +103,28 @@ namespace RPG.Combat
         {
             if(target == null) { return; }
             //if there is no target when the event triggers, return null to prevent error
-            target.TakeDamage(WeaponDamage);
-            //makes the healthPoints component take the desired amount of damage
+            if (currentWeapon.HasProjectile())
+            {
+                currentWeapon.LaunchProjectile(rightHandTransform, leftHandTransform, target);
+                //if the current weapon has a projectile, launch it (not hit the enemy event, its the animation trigger event)
+            }
+            else 
+            {
+                target.TakeDamage(currentWeapon.GetDamage());
+                //makes the healthPoints component take the desired amount of damage 
+            }
+
+        }
+
+        void Shoot()
+            //trigger on bow animation attack, only here because we cant change the name in the animation
+        {
+            Hit();
         }
 
         private bool GetIsInRange()
         {
-            return Vector3.Distance(transform.position, target.transform.position) < weaponRange;
+            return Vector3.Distance(transform.position, target.transform.position) < currentWeapon.GetRange();
             //if the distance between self, and target position is in range, set true.
         }
 
@@ -118,7 +165,21 @@ namespace RPG.Combat
             return targetToTest != null && !targetToTest.IsDead();
             //returns if the target to test exists and returns if it is dead.
         }
-        
+
+        public JToken CaptureAsJToken()
+        {
+            return currentWeapon.name;
+        }
+
+        public void RestoreFromJToken(JToken state)
+        {
+            string weaponName = (string)state;
+            //cast the state as a string
+            Weapon weapon = Resources.Load<Weapon>(weaponName);
+            //load the weapon from the resources folder
+            EquipWeapon(weapon);
+            //equip the saved weapon
+        }
     }
 }
 
