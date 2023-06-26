@@ -109,13 +109,13 @@ namespace RPG.Combat
             //if there is no target when the event triggers, return null to prevent error
             if (currentWeapon.HasProjectile())
             {
-                currentWeapon.LaunchProjectile(rightHandTransform, leftHandTransform, target);
+                currentWeapon.LaunchProjectile(rightHandTransform, leftHandTransform, target, gameObject);
                 //if the current weapon has a projectile, launch it (not hit the enemy event, its the animation trigger event)
             }
             else 
             {
-                target.TakeDamage(currentWeapon.GetDamage());
-                //makes the healthPoints component take the desired amount of damage 
+                target.TakeDamage(gameObject, currentWeapon.GetDamage());
+                //makes the healthPoints component take the desired amount of damage as well as who applied the damage
             }
 
         }
@@ -138,7 +138,6 @@ namespace RPG.Combat
             //Starts the attack action
             target = combatTarget.GetComponent<Health>();
             //sets the target to our combat target
-            print("Die you GameObject!");
         }
 
         public void Cancel()

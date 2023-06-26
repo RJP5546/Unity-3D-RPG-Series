@@ -20,5 +20,11 @@ namespace RPG.Stats
             return progression.GetHealth(characterClass, startingLevel);
             //calls the GetHealth() method from Progression and returns the float, this chain refrence prevents circular dependancies
         }
+
+        public float GetExpierenceReward()
+        {
+            return 10f;
+            //returns expierence from kill
+        }
     }
 }

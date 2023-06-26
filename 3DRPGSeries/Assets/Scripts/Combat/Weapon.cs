@@ -76,11 +76,11 @@ namespace RPG.Combat
             //lets us know if we have a projectile equipped
         }
 
-        public void LaunchProjectile(Transform rightHand, Transform leftHand, Health target)
+        public void LaunchProjectile(Transform rightHand, Transform leftHand, Health target, GameObject instigator)
         {
             Projectile projectileInstance = Instantiate(projectile, GetTransform(rightHand, leftHand).position, Quaternion.identity);
             //creates a projectile from the proper hand and rotation
-            projectileInstance.SetTarget(target, weaponDamage);
+            projectileInstance.SetTarget(target,instigator,weaponDamage);
             //sets the target for the projectile and its damage
         }
         

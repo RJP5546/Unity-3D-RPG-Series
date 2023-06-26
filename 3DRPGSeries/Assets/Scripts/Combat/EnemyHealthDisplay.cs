@@ -21,6 +21,8 @@ namespace RPG.Combat
             if(fighter.GetTarget() == null) 
             {
                 healthText.text = "N/A";
+                //set the text to display there is no target
+                return;
             }
             Health health = fighter.GetTarget();
             //cache the targets health component

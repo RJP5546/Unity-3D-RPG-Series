@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using RPG.Saving;
 using RPG.Stats;
 using RPG.Core;
+using System;
 
 namespace RPG.Attributes
 {
@@ -25,15 +26,16 @@ namespace RPG.Attributes
             //lets other classes know if object is dead.
         }
 
-        public void TakeDamage(float damage)
+        public void TakeDamage(GameObject instigator, float damage)
         {
             healthPoints = Mathf.Max(healthPoints - damage, 0f);
             //sets healthPoints to whats higher, either healthPoints- damage, or 0. This prevents healthPoints from going below 0
-            print(healthPoints);
             if(healthPoints == 0f)
             {
                 Die();
                 //when the object health hits 0, call Die().
+                AwardExpierence(instigator);
+                //award expierence to the instagator
             }
         }
 
@@ -53,6 +55,16 @@ namespace RPG.Attributes
             //playes the death animation
             GetComponent<ActionScheduler>().CancelCurrentAction();
             //stops the current action
+        }
+
+        private void AwardExpierence(GameObject instigator)
+        {
+            Expierence expierence = instigator.GetComponent<Expierence>();
+            //set refrence to the expierence component
+            if(expierence == null) { return; }
+            //if there is no expierence component, ignore
+            expierence.GainExpierence(GetComponent<BaseStats>().GetExpierenceReward());
+            //gain expierence from the BaseStats GetExpierenceReward method
         }
 
         public JToken CaptureAsJToken()
