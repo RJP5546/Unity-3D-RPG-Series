@@ -70,6 +70,12 @@ namespace RPG.Combat
             //tell the weapon class to spawn the weapon, passes the hand transform and animator for the object
         }
 
+        public Health GetTarget()
+        {
+            return target;
+            //return the target object for outside refrence
+        }
+
         private void AttackBehavior()
         {
             transform.LookAt(target.transform.position);

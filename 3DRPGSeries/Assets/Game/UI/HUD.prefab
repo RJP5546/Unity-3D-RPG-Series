@@ -277,7 +277,7 @@ GameObject:
   - component: {fileID: 4085558454379090093}
   - component: {fileID: 1182020409596009561}
   - component: {fileID: 7613767875526796651}
-  - component: {fileID: 4343805159232242051}
+  - component: {fileID: 2095547195077000198}
   m_Layer: 5
   m_Name: Enemy Health Text
   m_TagString: Untagged
@@ -347,7 +347,7 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 100%
---- !u!114 &4343805159232242051
+--- !u!114 &2095547195077000198
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -356,7 +356,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6866370940447415469}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2288a28d7a951546ba7d67cfe68699d, type: 3}
+  m_Script: {fileID: 11500000, guid: 3467ea62de07f6c4ba7c6d59225f2bf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &7393823696451820770
