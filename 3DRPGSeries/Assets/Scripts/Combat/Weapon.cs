@@ -36,10 +36,20 @@ namespace RPG.Combat
                 weapon.name = weaponName;
                 //sets the name component of the weapon
             }
+
+            var overideController = animator.runtimeAnimatorController as AnimatorOverrideController;
+            //casts the controller as an override controller, if it is the default controller it will not have
+            //a parent refrence and return null
             if (animatorOverride != null)
             {
                 animator.runtimeAnimatorController = animatorOverride;
                 //changes the animator controller to the animatorOverride controller
+            }
+            else if (overideController != null)
+            {
+                animator.runtimeAnimatorController = overideController.runtimeAnimatorController;
+                //sets the animator controller to the overrides parent controller (default player controller)
+                //(runtimeAnimatorController is the parent controller)
             }
         }
 
