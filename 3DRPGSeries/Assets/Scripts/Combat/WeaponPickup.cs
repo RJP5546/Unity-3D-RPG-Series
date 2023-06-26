@@ -8,6 +8,8 @@ namespace RPG.Combat
     {
         [SerializeField] Weapon weapon = null;
         //a refrence to what weapon is on the ground
+        [SerializeField] float respawnTime = 5f;
+        //time the object will be hidden before becomeing active again
 
         private void OnTriggerEnter(Collider other)
         {
@@ -15,8 +17,27 @@ namespace RPG.Combat
             {
                 other.GetComponent<Fighter>().EquipWeapon(weapon);
                 //get the players fighter component and run EquipWeapon with the passed weapon type
-                Destroy(gameObject);
-                //destroy the weapon on the ground
+                StartCoroutine(HideForSeconds(respawnTime));
+                //starts the respawn timer and functions
+            }
+        }
+
+        private IEnumerator HideForSeconds(float seconds)
+        {
+            ShowPickup(false);
+            yield return new WaitForSeconds(seconds);
+            ShowPickup(true);
+        }
+
+        private void ShowPickup(bool shouldShow)
+        {
+            GetComponent<Collider>().enabled = shouldShow;
+            //disables or enables the collider
+            foreach (Transform child in transform)
+                //gets all the children
+            {
+                child.gameObject.SetActive(shouldShow);
+                //toggles all the children
             }
         }
     }
