@@ -15,16 +15,10 @@ namespace RPG.Stats
         [SerializeField] Progression progression = null;
         //set the progression aspect in the editor
 
-        public float GetHealth()
+        public float GetStat(Stat stat)
         {
-            return progression.GetHealth(characterClass, startingLevel);
+            return progression.GetStat(stat, characterClass, startingLevel);
             //calls the GetHealth() method from Progression and returns the float, this chain refrence prevents circular dependancies
-        }
-
-        public float GetExpierenceReward()
-        {
-            return 10f;
-            //returns expierence from kill
         }
     }
 }

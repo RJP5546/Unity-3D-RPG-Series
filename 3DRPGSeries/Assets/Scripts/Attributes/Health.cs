@@ -16,7 +16,7 @@ namespace RPG.Attributes
 
         public void Start()
         {
-            healthPoints = GetComponent<BaseStats>().GetHealth();
+            healthPoints = GetComponent<BaseStats>().GetStat(Stat.Health);
         }
 
 
@@ -41,7 +41,7 @@ namespace RPG.Attributes
 
         public float GetPercentage()
         {
-            return 100 * (healthPoints / GetComponent<BaseStats>().GetHealth());
+            return 100 * (healthPoints / GetComponent<BaseStats>().GetStat(Stat.Health));
             //returns the health of the player as a percentage
         }
 
@@ -63,8 +63,8 @@ namespace RPG.Attributes
             //set refrence to the expierence component
             if(expierence == null) { return; }
             //if there is no expierence component, ignore
-            expierence.GainExpierence(GetComponent<BaseStats>().GetExpierenceReward());
-            //gain expierence from the BaseStats GetExpierenceReward method
+            expierence.GainExpierence(GetComponent<BaseStats>().GetStat(Stat.ExpierenceReward));
+            //gain expierence from the BaseStats GetStat() method
         }
 
         public JToken CaptureAsJToken()

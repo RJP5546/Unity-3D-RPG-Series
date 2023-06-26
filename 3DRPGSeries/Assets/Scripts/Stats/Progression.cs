@@ -8,14 +8,24 @@ public class Progression : ScriptableObject
     [SerializeField] ProgressionCharacterClass[] characterClasses = null;
     //select the character class from the editor to mark what progression tree the object will follow
 
-    public float GetHealth(CharacterClass characterClass, int level)
+    public float GetStat(Stat stat, CharacterClass characterClass, int level)
     {
         foreach (ProgressionCharacterClass progressionClass in characterClasses)
         {
-            if (progressionClass.characterClass == characterClass)
+            if (progressionClass.characterClass != characterClass) { continue; }
+            //if the progression class is not what was passed in, continue
+            foreach (ProgressionStat progressionStat in progressionClass.stats)
             {
-                //return progressionClass.health[level - 1];
+                if (progressionStat.stat != stat) { continue; }
+                //if the progressionStat is not the stat that was passed in, continue
+
+                if (progressionStat.levels.Length < level) { continue; }
+                //if the stat has less indexes than the current player level, ignore and continue. Prevents index out of range
+
+                return progressionStat.levels[level - 1];
+                //return the stat and its value at the current level's index
             }
+            
         }
         return 0;
     }
