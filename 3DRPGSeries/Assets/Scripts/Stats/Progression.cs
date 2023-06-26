@@ -12,9 +12,21 @@ public class Progression : ScriptableObject
     //marks the ProgressionCharacterClass as serializable, and makes the classes appear in the editor
     class ProgressionCharacterClass
     {
-        [SerializeField] CharacterClass characterClass;
+        public CharacterClass characterClass;
         //select the character class
-        [SerializeField] float[] health;
+        public float[] health;
         //health array for health values as object levels up
+    }
+
+    public float GetHealth(CharacterClass characterClass, int level)
+    {
+        foreach(ProgressionCharacterClass progressionClass in characterClasses)
+        {
+            if(progressionClass.characterClass == characterClass)
+            {
+                return progressionClass.health[level-1];
+            }
+        }
+        return 0;
     }
 }

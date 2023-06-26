@@ -1,10 +1,8 @@
 using Newtonsoft.Json.Linq;
 using RPG.Core;
+using RPG.Attributes;
 using RPG.Movement;
 using RPG.Saving;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace RPG.Combat

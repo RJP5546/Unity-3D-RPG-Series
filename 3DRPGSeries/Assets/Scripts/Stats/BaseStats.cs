@@ -14,5 +14,11 @@ namespace RPG.Stats
         //The type of class the character is, refrenced enum from CharacterClass file
         [SerializeField] Progression progression = null;
         //set the progression aspect in the editor
+
+        public float GetHealth()
+        {
+            return progression.GetHealth(characterClass, startingLevel);
+            //calls the GetHealth() method from Progression and returns the float, this chain refrence prevents circular dependancies
+        }
     }
 }
