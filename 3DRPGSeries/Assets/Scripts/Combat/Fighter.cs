@@ -1,5 +1,7 @@
+using Newtonsoft.Json.Linq;
 using RPG.Core;
 using RPG.Movement;
+using RPG.Saving;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +9,7 @@ using UnityEngine;
 
 namespace RPG.Combat
 {
-    public class Fighter : MonoBehaviour, IAction
+    public class Fighter : MonoBehaviour, IAction, IJsonSaveable
     {
         
         [SerializeField] float TimeBetweenAttacks;
@@ -18,8 +20,7 @@ namespace RPG.Combat
         //transform of the players left hand that the weapon will be attaching to
         [SerializeField] Weapon defaultWeapon = null;
         //initialise the equipped weapon as null, can be assigned later
-        [SerializeField] string defaultWeaponName = "Unarmed";
-        //string name refrence to the default weapon
+
         
         Health target;
         //the Health component of the combat target, gives us acess to health methods (like IsDead()).
@@ -30,10 +31,12 @@ namespace RPG.Combat
 
         private void Start()
         {
-            Weapon weapon = Resources.Load<Weapon>(defaultWeaponName);
-            //finds the default weapon with the string name assigned in the serialized field
-            EquipWeapon(weapon);
-            //spawn the default weapon in the players hand at the start
+            if (currentWeapon == null)
+            {
+                EquipWeapon(defaultWeapon);
+                //spawn the default weapon in the players hand at the start if the save system does not have a saved weapon
+            }
+
         }
 
 
@@ -162,7 +165,21 @@ namespace RPG.Combat
             return targetToTest != null && !targetToTest.IsDead();
             //returns if the target to test exists and returns if it is dead.
         }
-        
+
+        public JToken CaptureAsJToken()
+        {
+            return currentWeapon.name;
+        }
+
+        public void RestoreFromJToken(JToken state)
+        {
+            string weaponName = (string)state;
+            //cast the state as a string
+            Weapon weapon = Resources.Load<Weapon>(weaponName);
+            //load the weapon from the resources folder
+            EquipWeapon(weapon);
+            //equip the saved weapon
+        }
     }
 }
 
