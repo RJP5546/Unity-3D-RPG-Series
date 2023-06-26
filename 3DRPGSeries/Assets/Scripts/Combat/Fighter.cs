@@ -18,6 +18,8 @@ namespace RPG.Combat
         //transform of the players left hand that the weapon will be attaching to
         [SerializeField] Weapon defaultWeapon = null;
         //initialise the equipped weapon as null, can be assigned later
+        [SerializeField] string defaultWeaponName = "Unarmed";
+        //string name refrence to the default weapon
         
         Health target;
         //the Health component of the combat target, gives us acess to health methods (like IsDead()).
@@ -28,7 +30,9 @@ namespace RPG.Combat
 
         private void Start()
         {
-            EquipWeapon(defaultWeapon);
+            Weapon weapon = Resources.Load<Weapon>(defaultWeaponName);
+            //finds the default weapon with the string name assigned in the serialized field
+            EquipWeapon(weapon);
             //spawn the default weapon in the players hand at the start
         }
 
