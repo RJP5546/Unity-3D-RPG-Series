@@ -12,5 +12,7 @@ namespace RPG.Stats
         //character level
         [SerializeField] CharacterClass characterClass;
         //The type of class the character is, refrenced enum from CharacterClass file
+        [SerializeField] Progression progression = null;
+        //set the progression aspect in the editor
     }
 }
