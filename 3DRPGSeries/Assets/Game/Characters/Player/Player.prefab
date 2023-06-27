@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: characterClass
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -3514784574542657281, guid: c27a5069370f9d84095da0545d107929, type: 3}
+      propertyPath: levelUpParticleEffect
+      value: 
+      objectReference: {fileID: 6123016904795086455, guid: d4ec109f91e1dbc47920b7c2e07eb6a4, type: 3}
     - target: {fileID: 400819133066405893, guid: c27a5069370f9d84095da0545d107929, type: 3}
       propertyPath: uniqueIdentifier
       value: Player
@@ -215,7 +219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c11b0b581c33dc74f8da70fbb3fbbd8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  expierencePoints: 0
+  experiencePoints: 0
 --- !u!4 &3103951707106472125 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7119143348036808787, guid: c27a5069370f9d84095da0545d107929, type: 3}

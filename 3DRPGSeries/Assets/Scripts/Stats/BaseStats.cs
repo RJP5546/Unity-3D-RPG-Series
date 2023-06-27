@@ -1,4 +1,5 @@
 using RPG.Stats;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +16,11 @@ namespace RPG.Stats
         //The type of class the character is, refrenced enum from CharacterClass file
         [SerializeField] Progression progression = null;
         //set the progression aspect in the editor
+        [SerializeField] GameObject levelUpParticleEffect = null;
+        //set the particle effect to be generated upon leveling up
+
+        public event Action OnLevelUp;
+        //action to be called on level up
 
         int currentLevel = 0;
         //initialize the level at an invalid value, to ensure proper initialization
@@ -39,9 +45,16 @@ namespace RPG.Stats
             {
                 currentLevel = newLevel;
                 //set the new level as current
-                print("Leveled up!");
-                //notify player of level up
+                LevelUpEffect();
+                //spawn the level up effect
+                OnLevelUp();
+                //Update anything based on level up event
             }
+        }
+
+        private void LevelUpEffect()
+        {
+            Instantiate(levelUpParticleEffect, transform);
         }
 
         public float GetStat(Stat stat)

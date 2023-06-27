@@ -9,6 +9,10 @@ namespace RPG.Attributes
 {
     public class Health : MonoBehaviour, IJsonSaveable
     {
+
+        [SerializeField] float regerationPercentage = 70;
+        //percentage of max health that the player regenerates to on level up
+
         float healthPoints = -1f;
         //set the healthPoints value to an unobtainable value on initialization
         bool isDead = false;
@@ -16,6 +20,8 @@ namespace RPG.Attributes
 
         public void Start()
         {
+            GetComponent<BaseStats>().OnLevelUp += RegenerateHealth;
+            //adds RegenerateHealth() to the list of items called on OnLevelUp
             if(healthPoints < 0f)
             {
                 healthPoints = GetComponent<BaseStats>().GetStat(Stat.Health);
@@ -24,6 +30,13 @@ namespace RPG.Attributes
             
         }
 
+        private void RegenerateHealth()
+        {
+            float regenHealthPoints = GetComponent<BaseStats>().GetStat(Stat.Health) * (regerationPercentage / 100);
+            //sets regenHealthPoints to the new proper value for their level up, multiplied by the regen percentage
+            healthPoints = Mathf.Max(healthPoints, regenHealthPoints);
+
+        }
 
         public bool IsDead()
         {
