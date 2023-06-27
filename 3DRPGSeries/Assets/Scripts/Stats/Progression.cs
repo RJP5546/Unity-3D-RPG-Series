@@ -1,4 +1,6 @@
 using RPG.Stats;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Progression", menuName = "Stats/New Progression", order = 0)]
@@ -8,26 +10,43 @@ public class Progression : ScriptableObject
     [SerializeField] ProgressionCharacterClass[] characterClasses = null;
     //select the character class from the editor to mark what progression tree the object will follow
 
+    Dictionary<CharacterClass, Dictionary<Stat, float[]>> lookupTable = null;
+
     public float GetStat(Stat stat, CharacterClass characterClass, int level)
     {
+        BuildLookup();
+
+        float[] levels = lookupTable[characterClass][stat];
+        //refrence the stat lookup table for the character class, then stat
+        if (levels.Length <level) { return 0; }
+        //pulls the length of the levels array out to see if we are attempting to index a value out of range
+        return levels[level - 1];
+        //returns the value assigned to the level's associated index for the desired character class and stat
+    }
+
+    private void BuildLookup()
+    {
+        if(lookupTable != null) { return; }
+        //if the table is built, ignore
+
+        lookupTable = new Dictionary<CharacterClass, Dictionary<Stat, float[]>>();
+        //creates the new lookupTable Dictionary, character class as key, then a dictionary as its value
+
         foreach (ProgressionCharacterClass progressionClass in characterClasses)
+        //for each character class
         {
-            if (progressionClass.characterClass != characterClass) { continue; }
-            //if the progression class is not what was passed in, continue
+            var statLookupTable = new Dictionary<Stat, float[]>();
+            //the statLookupTable Dictionary
+
             foreach (ProgressionStat progressionStat in progressionClass.stats)
             {
-                if (progressionStat.stat != stat) { continue; }
-                //if the progressionStat is not the stat that was passed in, continue
-
-                if (progressionStat.levels.Length < level) { continue; }
-                //if the stat has less indexes than the current player level, ignore and continue. Prevents index out of range
-
-                return progressionStat.levels[level - 1];
-                //return the stat and its value at the current level's index
+                statLookupTable[progressionStat.stat] = progressionStat.levels;
+                //adds the levels values into the stat look up table stat as the key, levels as the values
             }
-            
+
+            lookupTable[progressionClass.characterClass] = statLookupTable;
+            //adds the character class as the key, and the stat table as the value
         }
-        return 0;
     }
 
     [System.Serializable]
