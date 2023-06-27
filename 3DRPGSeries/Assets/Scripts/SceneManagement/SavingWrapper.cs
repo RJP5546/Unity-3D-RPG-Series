@@ -16,6 +16,11 @@ namespace RPG.SceneManagement
         [SerializeField] int firstLevelBuildIndex = 1;
         [SerializeField] int menuLevelBuildIndex = 0;
 
+        private void Awake()
+        {
+            StartCoroutine(LoadLastScene());
+        }
+
         public void ContinueGame()
         {
             StartCoroutine(LoadLastScene());

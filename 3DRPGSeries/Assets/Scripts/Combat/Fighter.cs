@@ -27,7 +27,7 @@ namespace RPG.Combat
         Weapon currentWeapon = null;
         //track the players current weapon
 
-        private void Start()
+        private void Awake()
         {
             if (currentWeapon == null)
             {
