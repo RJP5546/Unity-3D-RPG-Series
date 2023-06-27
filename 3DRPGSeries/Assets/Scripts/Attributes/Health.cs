@@ -34,8 +34,8 @@ namespace RPG.Attributes
             {
                 Die();
                 //when the object health hits 0, call Die().
-                AwardExpierence(instigator);
-                //award expierence to the instagator
+                AwardExperience(instigator);
+                //award experience to the instagator
             }
         }
 
@@ -57,14 +57,14 @@ namespace RPG.Attributes
             //stops the current action
         }
 
-        private void AwardExpierence(GameObject instigator)
+        private void AwardExperience(GameObject instigator)
         {
-            Expierence expierence = instigator.GetComponent<Expierence>();
-            //set refrence to the expierence component
-            if(expierence == null) { return; }
-            //if there is no expierence component, ignore
-            expierence.GainExpierence(GetComponent<BaseStats>().GetStat(Stat.ExpierenceReward));
-            //gain expierence from the BaseStats GetStat() method
+            Experience experience = instigator.GetComponent<Experience>();
+            //set refrence to the experience component
+            if(experience == null) { return; }
+            //if there is no experience component, ignore
+            experience.GainExperience(GetComponent<BaseStats>().GetStat(Stat.ExperienceReward));
+            //gain experience from the BaseStats GetStat() method
         }
 
         public JToken CaptureAsJToken()
