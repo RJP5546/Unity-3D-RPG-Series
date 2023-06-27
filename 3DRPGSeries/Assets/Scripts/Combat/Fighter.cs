@@ -4,6 +4,7 @@ using RPG.Attributes;
 using RPG.Movement;
 using RPG.Saving;
 using UnityEngine;
+using RPG.Stats;
 
 namespace RPG.Combat
 {
@@ -107,14 +108,17 @@ namespace RPG.Combat
         {
             if(target == null) { return; }
             //if there is no target when the event triggers, return null to prevent error
+
+            float damage = GetComponent<BaseStats>().GetStat(Stat.Damage);
+            //gets the damage based off of the Damage Stat
             if (currentWeapon.HasProjectile())
             {
-                currentWeapon.LaunchProjectile(rightHandTransform, leftHandTransform, target, gameObject);
+                currentWeapon.LaunchProjectile(rightHandTransform, leftHandTransform, target, gameObject, damage);
                 //if the current weapon has a projectile, launch it (not hit the enemy event, its the animation trigger event)
             }
             else 
             {
-                target.TakeDamage(gameObject, currentWeapon.GetDamage());
+                target.TakeDamage(gameObject, damage);
                 //makes the healthPoints component take the desired amount of damage as well as who applied the damage
             }
 
