@@ -9,14 +9,19 @@ namespace RPG.Attributes
 {
     public class Health : MonoBehaviour, IJsonSaveable
     {
-        [SerializeField] float healthPoints;
-        //set the healthPoints value in the inspector, will be changed based on stats later
+        float healthPoints = -1f;
+        //set the healthPoints value to an unobtainable value on initialization
         bool isDead = false;
         //default is alive
 
         public void Start()
         {
-            healthPoints = GetComponent<BaseStats>().GetStat(Stat.Health);
+            if(healthPoints < 0f)
+            {
+                healthPoints = GetComponent<BaseStats>().GetStat(Stat.Health);
+                //prevents the overlap between save loading and the start funtion
+            }
+            
         }
 
 
