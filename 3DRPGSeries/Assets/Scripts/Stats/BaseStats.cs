@@ -2,6 +2,7 @@ using RPG.Stats;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Schema;
 using UnityEngine;
 
 namespace RPG.Stats
@@ -59,7 +60,7 @@ namespace RPG.Stats
 
         public float GetStat(Stat stat)
         {
-            return progression.GetStat(stat, characterClass, GetLevel());
+            return progression.GetStat(stat, characterClass, GetLevel()) + GetAdditiveModifier(stat); ;
             //calls the GetStat() method from Progression and returns the float, this chain refrence prevents circular dependancies
         }
 
@@ -70,7 +71,26 @@ namespace RPG.Stats
             return currentLevel;
         }
 
-        public int CalculateLevel() 
+        private float GetAdditiveModifier(Stat stat)
+        {
+            float total = 0;
+            //initialize the calculation at 0
+            foreach(IModifierProvider provider in GetComponents<IModifierProvider>())
+                //for each modifier provider in the list of modifier components (example, each item equipped w/ stat buff)
+            {
+                foreach(float modifier in provider.GetAdditiveModifiers(stat))
+                    //for each modifier in the provider component (example, the quantity that the statistic is changed by.)
+                {
+                    total += modifier;
+                    //add the modifiers to the total moddifier effect
+                }
+            }
+            return total;
+            //returns the total additive modifiers for the stat
+        }
+
+
+        private int CalculateLevel() 
         {
             Experience experience = GetComponent<Experience>();
             //refrence to the expierence component

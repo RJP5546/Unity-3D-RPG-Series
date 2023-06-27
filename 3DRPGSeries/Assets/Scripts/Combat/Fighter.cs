@@ -5,10 +5,11 @@ using RPG.Movement;
 using RPG.Saving;
 using UnityEngine;
 using RPG.Stats;
+using System.Collections.Generic;
 
 namespace RPG.Combat
 {
-    public class Fighter : MonoBehaviour, IAction, IJsonSaveable
+    public class Fighter : MonoBehaviour, IAction, IJsonSaveable, IModifierProvider
     {
         
         [SerializeField] float TimeBetweenAttacks;
@@ -163,6 +164,15 @@ namespace RPG.Combat
             //cancels any attack animation and return to locomotion
         }
 
+        public IEnumerable<float> GetAdditiveModifiers(Stat stat)
+        {
+            if(stat == Stat.Damage)
+            {
+                yield return currentWeapon.GetDamage();
+                //returns the amount of damage the weapon does if the stat requested is the damage stat
+            }
+        }
+
         public bool CanAttack(GameObject combatTarget)
         {
             if(combatTarget == null) { return false; }
@@ -187,6 +197,8 @@ namespace RPG.Combat
             EquipWeapon(weapon);
             //equip the saved weapon
         }
+
+
     }
 }
 
