@@ -24,6 +24,15 @@ public class Progression : ScriptableObject
         //returns the value assigned to the level's associated index for the desired character class and stat
     }
 
+    public int GetLevels(Stat stat, CharacterClass characterClass)
+    {
+        BuildLookup();
+        //makes sure the lookup table is built
+        float[] levels = lookupTable[characterClass][stat];
+        //refrence the stat lookup table for the character class, then stat
+        return levels.Length;
+    }
+
     private void BuildLookup()
     {
         if(lookupTable != null) { return; }
