@@ -172,6 +172,14 @@ namespace RPG.Combat
                 //returns the amount of damage the weapon does if the stat requested is the damage stat
             }
         }
+        public IEnumerable<float> GetPercentageModifiers(Stat stat)
+        {
+            if (stat == Stat.Damage)
+            {
+                yield return currentWeapon.GetDamagePercentageBonus();
+                //returns the percent of damage buff the weapon does if the stat requested is the damage stat
+            }
+        }
 
         public bool CanAttack(GameObject combatTarget)
         {
@@ -197,7 +205,6 @@ namespace RPG.Combat
             EquipWeapon(weapon);
             //equip the saved weapon
         }
-
 
     }
 }

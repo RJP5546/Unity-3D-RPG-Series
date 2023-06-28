@@ -5,5 +5,6 @@ namespace RPG.Stats
     {
         IEnumerable<float> GetAdditiveModifiers(Stat stat);
         //IEnumerable allows foreach loops to be used
+        IEnumerable<float> GetPercentageModifiers(Stat stat);
     }
 }

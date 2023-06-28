@@ -13,6 +13,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -3514784574542657281, guid: c27a5069370f9d84095da0545d107929, type: 3}
+      propertyPath: shouldUseModifiers
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3514784574542657281, guid: c27a5069370f9d84095da0545d107929, type: 3}
       propertyPath: levelUpParticleEffect
       value: 
       objectReference: {fileID: 6123016904795086455, guid: d4ec109f91e1dbc47920b7c2e07eb6a4, type: 3}

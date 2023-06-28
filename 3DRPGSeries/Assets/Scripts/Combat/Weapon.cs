@@ -15,6 +15,8 @@ namespace RPG.Combat
         //sets the players weapon range, or the distance away from the enemy that the player stops to attack.
         [SerializeField] float weaponDamage = 5f;
         //sets the damage of player attacks, will be replaced by weapon properties later
+        [SerializeField] float weaponDamagePercentageBonus = 5f;
+        //sets the percent modifier of the weapon damage stat
         [SerializeField] bool isRightHanded = true;
         //set if the weapon is left or right handed
         [SerializeField] Projectile projectile = null;
@@ -91,6 +93,11 @@ namespace RPG.Combat
         public float GetDamage()
         {
             return weaponDamage;
+        }
+
+        public float GetDamagePercentageBonus()
+        {
+            return weaponDamagePercentageBonus;
         }
 
         private Transform GetTransform(Transform rightHand, Transform leftHand)

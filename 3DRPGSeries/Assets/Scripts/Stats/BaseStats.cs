@@ -19,6 +19,8 @@ namespace RPG.Stats
         //set the progression aspect in the editor
         [SerializeField] GameObject levelUpParticleEffect = null;
         //set the particle effect to be generated upon leveling up
+        [SerializeField] bool shouldUseModifiers = false;
+        //sets if any stat modifiers should be used.
 
         public event Action OnLevelUp;
         //action to be called on level up
@@ -60,8 +62,16 @@ namespace RPG.Stats
 
         public float GetStat(Stat stat)
         {
-            return progression.GetStat(stat, characterClass, GetLevel()) + GetAdditiveModifier(stat); ;
+            return (GetBaseStat(stat) + GetAdditiveModifier(stat)) * (1 + GetPercentageModifier(stat) / 100);
+            //returns the stat plus your additive multipliers, multiplied by your percentage modifiers
+            
+        }
+
+        private float GetBaseStat(Stat stat)
+        {
+            return progression.GetStat(stat, characterClass, GetLevel());
             //calls the GetStat() method from Progression and returns the float, this chain refrence prevents circular dependancies
+            //returns the base stat value for the characters class, stat and level
         }
 
         public int GetLevel()
@@ -73,6 +83,9 @@ namespace RPG.Stats
 
         private float GetAdditiveModifier(Stat stat)
         {
+            if (!shouldUseModifiers) {return 0; }
+            //if the object should not use modifiers, return 0 bonus
+
             float total = 0;
             //initialize the calculation at 0
             foreach(IModifierProvider provider in GetComponents<IModifierProvider>())
@@ -89,6 +102,26 @@ namespace RPG.Stats
             //returns the total additive modifiers for the stat
         }
 
+        private float GetPercentageModifier(Stat stat)
+        {
+            if (!shouldUseModifiers) { return 0; }
+            //if the object should not use modifiers, return 0 bonus
+
+            float total = 0;
+            //initialize the calculation at 0
+            foreach (IModifierProvider provider in GetComponents<IModifierProvider>())
+            //for each modifier provider in the list of modifier components (example, each item equipped w/ stat buff)
+            {
+                foreach (float modifier in provider.GetPercentageModifiers(stat))
+                //for each modifier in the provider component (example, the quantity that the statistic is changed by.)
+                {
+                    total += modifier;
+                    //add the modifiers to the total moddifier effect
+                }
+            }
+            return total;
+            //returns the total additive modifiers for the stat
+        }
 
         private int CalculateLevel() 
         {
