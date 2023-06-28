@@ -6,6 +6,8 @@ using RPG.Saving;
 using UnityEngine;
 using RPG.Stats;
 using System.Collections.Generic;
+using GameDevTV.Utils;
+using System;
 
 namespace RPG.Combat
 {
@@ -26,19 +28,27 @@ namespace RPG.Combat
         //the Health component of the combat target, gives us acess to health methods (like IsDead()).
         float timeSinceLastAttack = Mathf.Infinity;
         //the time since the player last attacked, initialised as infinity so the first attack is always avalible without waiting
-        Weapon currentWeapon = null;
-        //track the players current weapon
+        LazyValue<Weapon> currentWeapon;
+        //uses the lazy value wrapper class to ensure initialization before refrence, tracks the players current weapon
 
         private void Awake()
         {
-            if (currentWeapon == null)
-            {
-                EquipWeapon(defaultWeapon);
-                //spawn the default weapon in the players hand at the start if the save system does not have a saved weapon
-            }
-
+            currentWeapon = new LazyValue<Weapon>(SetupDefaultWeapon);
         }
 
+        private Weapon SetupDefaultWeapon()
+        {
+            AttachWeapon(defaultWeapon);
+            //equips the default weapon to the player
+            return defaultWeapon;
+            //sets current weapon to the default weapon
+        }
+
+        private void Start()
+        {
+            currentWeapon.ForceInit();
+            //forces the initialization of the weapon
+        }
 
         private void Update()
         {
@@ -64,8 +74,13 @@ namespace RPG.Combat
 
         public void EquipWeapon(Weapon weapon)
         {
-            currentWeapon = weapon;
+            currentWeapon.value = weapon;
             //set the current weapon
+            AttachWeapon(weapon);
+        }
+
+        private void AttachWeapon(Weapon weapon)
+        {
             Animator animator = GetComponent<Animator>();
             //gets local refrence to the animator
             weapon.Spawn(rightHandTransform, leftHandTransform, animator);
@@ -112,9 +127,9 @@ namespace RPG.Combat
 
             float damage = GetComponent<BaseStats>().GetStat(Stat.Damage);
             //gets the damage based off of the Damage Stat
-            if (currentWeapon.HasProjectile())
+            if (currentWeapon.value.HasProjectile())
             {
-                currentWeapon.LaunchProjectile(rightHandTransform, leftHandTransform, target, gameObject, damage);
+                currentWeapon.value.LaunchProjectile(rightHandTransform, leftHandTransform, target, gameObject, damage);
                 //if the current weapon has a projectile, launch it (not hit the enemy event, its the animation trigger event)
             }
             else 
@@ -133,7 +148,7 @@ namespace RPG.Combat
 
         private bool GetIsInRange()
         {
-            return Vector3.Distance(transform.position, target.transform.position) < currentWeapon.GetRange();
+            return Vector3.Distance(transform.position, target.transform.position) < currentWeapon.value.GetRange();
             //if the distance between self, and target position is in range, set true.
         }
 
@@ -168,7 +183,7 @@ namespace RPG.Combat
         {
             if(stat == Stat.Damage)
             {
-                yield return currentWeapon.GetDamage();
+                yield return currentWeapon.value.GetDamage();
                 //returns the amount of damage the weapon does if the stat requested is the damage stat
             }
         }
@@ -176,7 +191,7 @@ namespace RPG.Combat
         {
             if (stat == Stat.Damage)
             {
-                yield return currentWeapon.GetDamagePercentageBonus();
+                yield return currentWeapon.value.GetDamagePercentageBonus();
                 //returns the percent of damage buff the weapon does if the stat requested is the damage stat
             }
         }
@@ -193,7 +208,7 @@ namespace RPG.Combat
 
         public JToken CaptureAsJToken()
         {
-            return currentWeapon.name;
+            return currentWeapon.value.name;
         }
 
         public void RestoreFromJToken(JToken state)

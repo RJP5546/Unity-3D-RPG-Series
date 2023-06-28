@@ -36,8 +36,6 @@ namespace RPG.Movement
             MoveTo(destination, speedFraction);
         }
 
-
-
         public void MoveTo(Vector3 destination, float speedFraction)
         {
             navMeshAgent.isStopped = false;

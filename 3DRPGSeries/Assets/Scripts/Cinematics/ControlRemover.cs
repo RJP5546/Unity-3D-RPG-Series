@@ -14,14 +14,25 @@ namespace RPG.Cinematics
         GameObject player;
         //cache the player object to be used in all methods
 
-        private void Start()
+        private void Awake()
         {
             player = GameObject.FindWithTag("Player");
             //gets a refrence to the player game object
+        }
+        private void OnEnable()
+        {
             GetComponent<PlayableDirector>().played += DisableControl;
             //adds DisableControl to the list of callbacks for the .played call
             GetComponent<PlayableDirector>().stopped += EnableControl;
             //adds EnableControl to the list of callbacks for the .stopped call
+        }
+
+        private void OnDisable()
+        {
+            GetComponent<PlayableDirector>().played -= DisableControl;
+            //removes DisableControl to the list of callbacks for the .played call
+            GetComponent<PlayableDirector>().stopped -= EnableControl;
+            //removes EnableControl to the list of callbacks for the .stopped call
         }
 
         private void DisableControl(PlayableDirector pd)

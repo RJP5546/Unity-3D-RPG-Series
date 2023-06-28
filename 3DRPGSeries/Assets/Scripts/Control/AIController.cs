@@ -4,6 +4,7 @@ using RPG.Movement;
 using RPG.Attributes;
 using System;
 using UnityEngine;
+using GameDevTV.Utils;
 
 namespace RPG.Control
 {
@@ -33,7 +34,8 @@ namespace RPG.Control
         //The multiplier applied to the max speed of the navmesh agent during patroling
 
 
-        Vector3 guardPosition;
+        LazyValue<Vector3> guardPosition;
+        //uses the lazy value wrapper class to ensure initialization before refrence
         //The vector3 location of where the AI is guarding, and should return to upon player leaving chase range.
         float timeSinceLastSawPlayer = Mathf.Infinity;
         //A float to keep track of how long it has been since the player was seen by the object.
@@ -43,12 +45,24 @@ namespace RPG.Control
         float timeSinceArrivedAtWaypoint = Mathf.Infinity;
         //A float to keep track of how long it has been since the object has arrived at its current waypoint.
 
-        private void Start ()
+        private void Awake()
         {
             player = GameObject.FindWithTag("Player");
             //initialises the player component upon start
-            guardPosition = transform.position;
-            //sets the guard position to the objects initial position upon game start
+
+            guardPosition = new LazyValue<Vector3>(GetGuardPosition);
+        }
+
+        private Vector3 GetGuardPosition()
+        {
+            return transform.position;
+            //sets the guard position to the objects initial position upon initialization
+        }
+
+        private void Start ()
+        {
+            guardPosition.ForceInit();
+            //if guardPosition hasnt been accessed yet, this forces it to initialize
         }
 
         private void Update()
@@ -83,7 +97,7 @@ namespace RPG.Control
 
         private void PatrolBehaviour()
         {
-            Vector3 nextPosition = guardPosition;
+            Vector3 nextPosition = guardPosition.value;
             //starts the next position as the guard position so the guard starts at the guard point
             if (patrolPath != null)
             {

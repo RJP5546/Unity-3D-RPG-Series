@@ -1,3 +1,4 @@
+using GameDevTV.Utils;
 using RPG.Stats;
 using System;
 using System.Collections;
@@ -25,18 +26,41 @@ namespace RPG.Stats
         public event Action OnLevelUp;
         //action to be called on level up
 
-        int currentLevel = 0;
+        LazyValue<int> currentLevel;
         //initialize the level at an invalid value, to ensure proper initialization
+        Experience experience;
+        //refrence to the expierence component
+
+        private void Awake()
+        {
+            Experience experience = GetComponent<Experience>();
+            //set in awake so it can be refrenced on start
+            currentLevel = new LazyValue<int>(CalculateLevel);
+            //passes CalculateLevel to the lazy value, doesnt call on awake but passes the value for when it does initalize
+        }
 
         private void Start()
         {
-            currentLevel = CalculateLevel();
-            Experience experience = GetComponent<Experience>();
-            //refrence to the expierence component
-            if(experience != null )
+            currentLevel.ForceInit();
+            //if current level hasnt been accessed yet, this forces it to initialize
+        }
+
+        private void OnEnable()
+        //called before start but after awake
+        {
+            if (experience != null)
             {
                 experience.onExpierenceGained += UpdateLevel;
                 //adds update level to the list of methods activated on the action
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (experience != null)
+            {
+                experience.onExpierenceGained -= UpdateLevel;
+                //removes update level to the list of methods activated on the action
             }
         }
 
@@ -44,9 +68,9 @@ namespace RPG.Stats
         {
             int newLevel = CalculateLevel();
             //checks to see if we have a new level
-            if(newLevel > currentLevel)
+            if(newLevel > currentLevel.value)
             {
-                currentLevel = newLevel;
+                currentLevel.value = newLevel;
                 //set the new level as current
                 LevelUpEffect();
                 //spawn the level up effect
@@ -76,9 +100,7 @@ namespace RPG.Stats
 
         public int GetLevel()
         {
-            if(currentLevel < 1) { CalculateLevel(); }
-            //if the current level isnt initialized, initialize it
-            return currentLevel;
+            return currentLevel.value;
         }
 
         private float GetAdditiveModifier(Stat stat)

@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 using RPG.Saving;
 using RPG.Stats;
 using RPG.Core;
-using System;
+using GameDevTV.Utils;
 
 namespace RPG.Attributes
 {
@@ -13,28 +13,34 @@ namespace RPG.Attributes
         [SerializeField] float regerationPercentage = 70;
         //percentage of max health that the player regenerates to on level up
 
-        float healthPoints = -1f;
-        //set the healthPoints value to an unobtainable value on initialization
+        LazyValue<float> healthPoints;
+        //uses the lazy value wrapper class to ensure initialization before refrence
         bool isDead = false;
         //default is alive
 
+        private void Awake()
+        {
+            healthPoints = new LazyValue<float>(GetInitialHealth);
+            //passes getInitialHealth to the lazy value, doesnt call on awake but passes the value for when it does initalize
+        }
+
+        private float GetInitialHealth()
+        {
+            return GetComponent<BaseStats>().GetStat(Stat.Health);
+            //returns the inital health value based on stats
+        }
+
         public void Start()
         {
-            GetComponent<BaseStats>().OnLevelUp += RegenerateHealth;
-            //adds RegenerateHealth() to the list of items called on OnLevelUp
-            if(healthPoints < 0f)
-            {
-                healthPoints = GetComponent<BaseStats>().GetStat(Stat.Health);
-                //prevents the overlap between save loading and the start funtion
-            }
-            
+            healthPoints.ForceInit();
+            //if health hasnt been accessed yet, this forces it to initialize
         }
 
         private void RegenerateHealth()
         {
             float regenHealthPoints = GetComponent<BaseStats>().GetStat(Stat.Health) * (regerationPercentage / 100);
             //sets regenHealthPoints to the new proper value for their level up, multiplied by the regen percentage
-            healthPoints = Mathf.Max(healthPoints, regenHealthPoints);
+            healthPoints.value = Mathf.Max(healthPoints.value, regenHealthPoints);
 
         }
 
@@ -48,9 +54,9 @@ namespace RPG.Attributes
         {
             print(gameObject.name + " took Damage: "+ damage);
 
-            healthPoints = Mathf.Max(healthPoints - damage, 0f);
+            healthPoints.value = Mathf.Max(healthPoints.value - damage, 0f);
             //sets healthPoints to whats higher, either healthPoints- damage, or 0. This prevents healthPoints from going below 0
-            if(healthPoints == 0f)
+            if(healthPoints.value == 0f)
             {
                 Die();
                 //when the object health hits 0, call Die().
@@ -61,7 +67,7 @@ namespace RPG.Attributes
 
         public float GetHealthPoints()
         {
-            return healthPoints;
+            return healthPoints.value;
         }
         public float GetMaxHealthPoints()
         {
@@ -70,7 +76,7 @@ namespace RPG.Attributes
 
         public float GetPercentage()
         {
-            return 100 * (healthPoints / GetComponent<BaseStats>().GetStat(Stat.Health));
+            return 100 * (healthPoints.value / GetComponent<BaseStats>().GetStat(Stat.Health));
             //returns the health of the player as a percentage
         }
 
@@ -102,8 +108,8 @@ namespace RPG.Attributes
         }
         public void RestoreFromJToken(JToken state)
         {
-            healthPoints = state.ToObject<float>();
-            if (healthPoints <= 0f)
+            healthPoints.value = state.ToObject<float>();
+            if (healthPoints.value <= 0f)
             {
                 Die();
             }
