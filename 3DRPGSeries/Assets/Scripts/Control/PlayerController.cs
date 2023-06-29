@@ -53,13 +53,35 @@ namespace RPG.Control
                 //dont do any other actions
             }
             //if the player is dead, do nothing
-            if (InteractWithCombat()) { return; }
-            //if InteractWithCombat is true, ignore movement.
+
+            if (InteractWithComponent()) { return; }
+            //if it can interact with a component, return.
             if (InteractWithMovement()) { return; }
             //if InteractWithMovement is true, allow movement, if not, it will continue and say there is no action the player can take
             SetCursor(CursorType.None);
             //set the kind of cursor that appears on screen to no action
 
+        }
+
+        private bool InteractWithComponent()
+        {
+            RaycastHit[] hits = Physics.RaycastAll(GetMouseRay());
+            //puts everything the ray hits into an array
+            foreach (RaycastHit hit in hits)
+            {
+                IRaycastable[] raycastables = hit.transform.GetComponents<IRaycastable>();
+                //creates an array based on every raycastable game object
+                foreach(IRaycastable raycastable in raycastables)
+                {
+                    if (raycastable.HandleRaycast(this))
+                    {
+                        SetCursor(CursorType.Combat);
+                        return true;
+                    }
+                }
+            }
+            return false;
+            //there were no Raycastable objects hit
         }
 
         private bool InteractWithUI()
@@ -74,29 +96,6 @@ namespace RPG.Control
             return false;
         }
 
-        private bool InteractWithCombat()
-        {
-            RaycastHit[] hits = Physics.RaycastAll(GetMouseRay());
-            //puts everything the ray hits into an array
-            foreach (RaycastHit hit in hits)
-            {
-                CombatTarget target = hit.transform.GetComponent<CombatTarget>();
-                //every object has a transform component, and a component can see any other sibling component on an object
-                if (target == null) {continue; }
-                //if there is no combat target, make it not clickable
-                if (!GetComponent<Fighter>().CanAttack(target.gameObject)) { continue; }
-                //if we cant attack,conntine in the foreach loop (going to the next thing in array)
-                if(Input.GetMouseButton(0)) 
-                {
-                    GetComponent<Fighter>().Attack(target.gameObject);
-                }
-                SetCursor(CursorType.Combat);
-                //set the kind of cursor that appears on screen to combat
-                return true;
-                //returns true even for hovering over a target
-            }
-            return false;
-        }
 
         private bool InteractWithMovement()
         {
