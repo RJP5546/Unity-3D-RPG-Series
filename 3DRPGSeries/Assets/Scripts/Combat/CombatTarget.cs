@@ -8,6 +8,12 @@ namespace RPG.Combat
     //Health script is required for CombatTarget
     public class CombatTarget : MonoBehaviour, IRaycastable
     {
+        public CursorType GetCursorType()
+        {
+            return CursorType.Combat;
+            //sets the cursor to combat
+        }
+
         public bool HandleRaycast(PlayerController callingController)
         {
             if (!callingController.GetComponent<Fighter>().CanAttack(gameObject)) { return false; }

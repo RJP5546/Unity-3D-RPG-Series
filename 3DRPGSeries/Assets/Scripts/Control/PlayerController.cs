@@ -16,14 +16,7 @@ namespace RPG.Control
         [SerializeField] Health health;
         //cache refrence to the health component
 
-        enum CursorType
-            //the tyoes of cursors to display on screen
-        {
-            None,
-            Movement,
-            Combat,
-            UI
-        }
+        
         [System.Serializable]
         struct CursorMapping
         {
@@ -75,7 +68,8 @@ namespace RPG.Control
                 {
                     if (raycastable.HandleRaycast(this))
                     {
-                        SetCursor(CursorType.Combat);
+                        SetCursor(raycastable.GetCursorType());
+                        //sets the cursor type to the racastable decided cursor type
                         return true;
                     }
                 }

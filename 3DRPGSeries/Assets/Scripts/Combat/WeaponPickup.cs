@@ -58,5 +58,10 @@ namespace RPG.Combat
             return true;
             //says that the weapon is being picked up, dont walk or enter combat
         }
+
+        public CursorType GetCursorType()
+        {
+            return CursorType.Pickup;
+        }
     }
 }
