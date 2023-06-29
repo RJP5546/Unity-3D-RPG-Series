@@ -58,8 +58,8 @@ namespace RPG.Control
 
         private bool InteractWithComponent()
         {
-            RaycastHit[] hits = Physics.RaycastAll(GetMouseRay());
-            //puts everything the ray hits into an array
+            RaycastHit[] hits = RaycastAllSorted();
+            //everything the ray hits into an sorted array
             foreach (RaycastHit hit in hits)
             {
                 IRaycastable[] raycastables = hit.transform.GetComponents<IRaycastable>();
@@ -76,6 +76,23 @@ namespace RPG.Control
             }
             return false;
             //there were no Raycastable objects hit
+        }
+
+        RaycastHit[] RaycastAllSorted()
+        {
+            RaycastHit[] hits = Physics.RaycastAll(GetMouseRay());
+            //puts everything the ray hits into an array
+            float[] distances = new float[hits.Length];
+            //creates an array for the hit item distances thats the same length as the hits array
+            for( int i = 0; i < hits.Length; i++)
+            {
+                distances[i] = hits[i].distance;
+                //sets the value of distance[i] to the distance between the hit and its distance from the raycast
+            }
+            Array.Sort(distances, hits);
+            //rearranges the second array based on the first array
+            return hits;
+            
         }
 
         private bool InteractWithUI()
