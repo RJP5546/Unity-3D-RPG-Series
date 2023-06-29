@@ -8,7 +8,7 @@ namespace RPG.SceneManagement
     {
         CanvasGroup canvasGroup;
         //the game objects canvas group local variable
-        public void Start ()
+        public void Awake ()
         {
             canvasGroup = GetComponent<CanvasGroup>();
             //gets the canvas group component and assigns it as a local variable.

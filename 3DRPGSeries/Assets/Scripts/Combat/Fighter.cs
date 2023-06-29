@@ -1,15 +1,17 @@
 using Newtonsoft.Json.Linq;
 using RPG.Core;
+using RPG.Attributes;
 using RPG.Movement;
 using RPG.Saving;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using RPG.Stats;
+using System.Collections.Generic;
+using GameDevTV.Utils;
+using System;
 
 namespace RPG.Combat
 {
-    public class Fighter : MonoBehaviour, IAction, IJsonSaveable
+    public class Fighter : MonoBehaviour, IAction, IJsonSaveable, IModifierProvider
     {
         
         [SerializeField] float TimeBetweenAttacks;
@@ -26,19 +28,27 @@ namespace RPG.Combat
         //the Health component of the combat target, gives us acess to health methods (like IsDead()).
         float timeSinceLastAttack = Mathf.Infinity;
         //the time since the player last attacked, initialised as infinity so the first attack is always avalible without waiting
-        Weapon currentWeapon = null;
-        //track the players current weapon
+        LazyValue<Weapon> currentWeapon;
+        //uses the lazy value wrapper class to ensure initialization before refrence, tracks the players current weapon
+
+        private void Awake()
+        {
+            currentWeapon = new LazyValue<Weapon>(SetupDefaultWeapon);
+        }
+
+        private Weapon SetupDefaultWeapon()
+        {
+            AttachWeapon(defaultWeapon);
+            //equips the default weapon to the player
+            return defaultWeapon;
+            //sets current weapon to the default weapon
+        }
 
         private void Start()
         {
-            if (currentWeapon == null)
-            {
-                EquipWeapon(defaultWeapon);
-                //spawn the default weapon in the players hand at the start if the save system does not have a saved weapon
-            }
-
+            currentWeapon.ForceInit();
+            //forces the initialization of the weapon
         }
-
 
         private void Update()
         {
@@ -64,12 +74,23 @@ namespace RPG.Combat
 
         public void EquipWeapon(Weapon weapon)
         {
-            currentWeapon = weapon;
+            currentWeapon.value = weapon;
             //set the current weapon
+            AttachWeapon(weapon);
+        }
+
+        private void AttachWeapon(Weapon weapon)
+        {
             Animator animator = GetComponent<Animator>();
             //gets local refrence to the animator
             weapon.Spawn(rightHandTransform, leftHandTransform, animator);
             //tell the weapon class to spawn the weapon, passes the hand transform and animator for the object
+        }
+
+        public Health GetTarget()
+        {
+            return target;
+            //return the target object for outside refrence
         }
 
         private void AttackBehavior()
@@ -103,15 +124,18 @@ namespace RPG.Combat
         {
             if(target == null) { return; }
             //if there is no target when the event triggers, return null to prevent error
-            if (currentWeapon.HasProjectile())
+
+            float damage = GetComponent<BaseStats>().GetStat(Stat.Damage);
+            //gets the damage based off of the Damage Stat
+            if (currentWeapon.value.HasProjectile())
             {
-                currentWeapon.LaunchProjectile(rightHandTransform, leftHandTransform, target);
+                currentWeapon.value.LaunchProjectile(rightHandTransform, leftHandTransform, target, gameObject, damage);
                 //if the current weapon has a projectile, launch it (not hit the enemy event, its the animation trigger event)
             }
             else 
             {
-                target.TakeDamage(currentWeapon.GetDamage());
-                //makes the healthPoints component take the desired amount of damage 
+                target.TakeDamage(gameObject, damage);
+                //makes the healthPoints component take the desired amount of damage as well as who applied the damage
             }
 
         }
@@ -124,7 +148,7 @@ namespace RPG.Combat
 
         private bool GetIsInRange()
         {
-            return Vector3.Distance(transform.position, target.transform.position) < currentWeapon.GetRange();
+            return Vector3.Distance(transform.position, target.transform.position) < currentWeapon.value.GetRange();
             //if the distance between self, and target position is in range, set true.
         }
 
@@ -134,7 +158,6 @@ namespace RPG.Combat
             //Starts the attack action
             target = combatTarget.GetComponent<Health>();
             //sets the target to our combat target
-            print("Die you GameObject!");
         }
 
         public void Cancel()
@@ -156,6 +179,23 @@ namespace RPG.Combat
             //cancels any attack animation and return to locomotion
         }
 
+        public IEnumerable<float> GetAdditiveModifiers(Stat stat)
+        {
+            if(stat == Stat.Damage)
+            {
+                yield return currentWeapon.value.GetDamage();
+                //returns the amount of damage the weapon does if the stat requested is the damage stat
+            }
+        }
+        public IEnumerable<float> GetPercentageModifiers(Stat stat)
+        {
+            if (stat == Stat.Damage)
+            {
+                yield return currentWeapon.value.GetDamagePercentageBonus();
+                //returns the percent of damage buff the weapon does if the stat requested is the damage stat
+            }
+        }
+
         public bool CanAttack(GameObject combatTarget)
         {
             if(combatTarget == null) { return false; }
@@ -168,7 +208,7 @@ namespace RPG.Combat
 
         public JToken CaptureAsJToken()
         {
-            return currentWeapon.name;
+            return currentWeapon.value.name;
         }
 
         public void RestoreFromJToken(JToken state)
@@ -180,6 +220,7 @@ namespace RPG.Combat
             EquipWeapon(weapon);
             //equip the saved weapon
         }
+
     }
 }
 

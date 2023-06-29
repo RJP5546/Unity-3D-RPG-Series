@@ -1,11 +1,7 @@
 using RPG.Combat;
-using RPG.Core;
+using RPG.Attributes;
 using RPG.Movement;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace RPG.Control
     //Namespaces prevent overlapping of class names, need to add in using statements to refrence namespaced classes

@@ -1,6 +1,4 @@
-using RPG.Core;
-using System.Collections;
-using System.Collections.Generic;
+using RPG.Attributes;
 using UnityEngine;
 
 namespace RPG.Combat
@@ -23,6 +21,8 @@ namespace RPG.Combat
 
         Health target = null;
         //the target for the projectile
+        GameObject instigator = null;
+        //the gameObject that shot the projectile
         float damage = 0;
         //projectile damage
 
@@ -45,12 +45,14 @@ namespace RPG.Combat
             //moves the projectile on the z axis at a set speed over time
 
         }
-        public void SetTarget(Health target, float damage)
+        public void SetTarget(Health target,GameObject instigator, float damage)
         {
             this.target = target;
             //sets the projectiles target to the passed in target
             this.damage = damage;
             //sets the projectile damage to the passed in damage
+            this.instigator = instigator;
+            //sets the projectime instigator
 
             Destroy(gameObject, maxLifeTime);
             //destroy the projectile after the max life time
@@ -77,7 +79,7 @@ namespace RPG.Combat
             //if the object hit is not our target, ignore
             if (target.IsDead()) { return; }
             //if the target is dead, dont deal damage and dont destroy the projectile
-            target.TakeDamage(damage);
+            target.TakeDamage(instigator, damage);
             //if it is the right target, deal damage
 
             if (hitEffect != null)

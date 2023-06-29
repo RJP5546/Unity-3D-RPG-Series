@@ -1,5 +1,4 @@
-using RPG.Core;
-using System;
+using RPG.Attributes;
 using UnityEngine;
 
 namespace RPG.Combat
@@ -16,6 +15,8 @@ namespace RPG.Combat
         //sets the players weapon range, or the distance away from the enemy that the player stops to attack.
         [SerializeField] float weaponDamage = 5f;
         //sets the damage of player attacks, will be replaced by weapon properties later
+        [SerializeField] float weaponDamagePercentageBonus = 5f;
+        //sets the percent modifier of the weapon damage stat
         [SerializeField] bool isRightHanded = true;
         //set if the weapon is left or right handed
         [SerializeField] Projectile projectile = null;
@@ -77,11 +78,11 @@ namespace RPG.Combat
             //lets us know if we have a projectile equipped
         }
 
-        public void LaunchProjectile(Transform rightHand, Transform leftHand, Health target)
+        public void LaunchProjectile(Transform rightHand, Transform leftHand, Health target, GameObject instigator, float calculatedDamage)
         {
             Projectile projectileInstance = Instantiate(projectile, GetTransform(rightHand, leftHand).position, Quaternion.identity);
             //creates a projectile from the proper hand and rotation
-            projectileInstance.SetTarget(target, weaponDamage);
+            projectileInstance.SetTarget(target,instigator,calculatedDamage);
             //sets the target for the projectile and its damage
         }
         
@@ -92,6 +93,11 @@ namespace RPG.Combat
         public float GetDamage()
         {
             return weaponDamage;
+        }
+
+        public float GetDamagePercentageBonus()
+        {
+            return weaponDamagePercentageBonus;
         }
 
         private Transform GetTransform(Transform rightHand, Transform leftHand)

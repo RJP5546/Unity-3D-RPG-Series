@@ -1,10 +1,7 @@
 using Newtonsoft.Json.Linq;
 using RPG.Core;
 using RPG.Saving;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+using RPG.Attributes;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -38,8 +35,6 @@ namespace RPG.Movement
             GetComponent<ActionScheduler>().StartAction(this);
             MoveTo(destination, speedFraction);
         }
-
-
 
         public void MoveTo(Vector3 destination, float speedFraction)
         {
