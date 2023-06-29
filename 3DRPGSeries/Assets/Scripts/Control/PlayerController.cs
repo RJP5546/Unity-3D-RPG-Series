@@ -3,6 +3,7 @@ using RPG.Attributes;
 using RPG.Movement;
 using UnityEngine;
 using System;
+using UnityEngine.EventSystems;
 
 namespace RPG.Control
     //Namespaces prevent overlapping of class names, need to add in using statements to refrence namespaced classes
@@ -20,7 +21,8 @@ namespace RPG.Control
         {
             None,
             Movement,
-            Combat
+            Combat,
+            UI
         }
         [System.Serializable]
         struct CursorMapping
@@ -41,7 +43,15 @@ namespace RPG.Control
         }
         private void Update()
         {
-            if (health.IsDead()) { return; }
+            if (InteractWithUI()) { return; }
+            //if interacting with UI, ignore
+            if (health.IsDead()) 
+            {
+                SetCursor(CursorType.None);
+                //sets the cursor to none
+                return;
+                //dont do any other actions
+            }
             //if the player is dead, do nothing
             if (InteractWithCombat()) { return; }
             //if InteractWithCombat is true, ignore movement.
@@ -50,6 +60,18 @@ namespace RPG.Control
             SetCursor(CursorType.None);
             //set the kind of cursor that appears on screen to no action
 
+        }
+
+        private bool InteractWithUI()
+        {
+            if (EventSystem.current.IsPointerOverGameObject())
+            //refers to UI Game objects, not world game objects. Returns if over UI or not.
+            {
+                SetCursor(CursorType.UI);
+                //sets the cursor to the UI cursor
+                return true;
+            }
+            return false;
         }
 
         private bool InteractWithCombat()
