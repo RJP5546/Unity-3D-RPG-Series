@@ -23,7 +23,7 @@ namespace RPG.Stats
         [SerializeField] bool shouldUseModifiers = false;
         //sets if any stat modifiers should be used.
 
-        public event Action OnLevelUp;
+        public event Action onLevelUp;
         //action to be called on level up
 
         LazyValue<int> currentLevel;
@@ -33,7 +33,7 @@ namespace RPG.Stats
 
         private void Awake()
         {
-            Experience experience = GetComponent<Experience>();
+            experience = GetComponent<Experience>();
             //set in awake so it can be refrenced on start
             currentLevel = new LazyValue<int>(CalculateLevel);
             //passes CalculateLevel to the lazy value, doesnt call on awake but passes the value for when it does initalize
@@ -74,7 +74,7 @@ namespace RPG.Stats
                 //set the new level as current
                 LevelUpEffect();
                 //spawn the level up effect
-                OnLevelUp();
+                onLevelUp();
                 //Update anything based on level up event
             }
         }

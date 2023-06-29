@@ -36,6 +36,17 @@ namespace RPG.Attributes
             //if health hasnt been accessed yet, this forces it to initialize
         }
 
+        private void OnEnable()
+        {
+            GetComponent<BaseStats>().onLevelUp += RegenerateHealth;
+            //listen for level up to trigger health regen
+        }
+        private void OnDisable()
+        {
+            GetComponent<BaseStats>().onLevelUp -= RegenerateHealth;
+            //stop listening for level up
+        }
+
         private void RegenerateHealth()
         {
             float regenHealthPoints = GetComponent<BaseStats>().GetStat(Stat.Health) * (regerationPercentage / 100);
