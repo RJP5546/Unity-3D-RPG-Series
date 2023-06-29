@@ -4,6 +4,7 @@ using RPG.Movement;
 using UnityEngine;
 using System;
 using UnityEngine.EventSystems;
+using UnityEngine.AI;
 
 namespace RPG.Control
     //Namespaces prevent overlapping of class names, need to add in using statements to refrence namespaced classes
@@ -15,8 +16,10 @@ namespace RPG.Control
         //set the component that we are using as the player navmesh
         [SerializeField] Health health;
         //cache refrence to the health component
+        [SerializeField] float maxNavMeshProjectionDistance = 1f;
+        //max distance the navmesh will project to find the closest point on a mesh if clicked off a nav mesh
 
-        
+
         [System.Serializable]
         struct CursorMapping
         {
@@ -110,19 +113,18 @@ namespace RPG.Control
 
         private bool InteractWithMovement()
         {
-            RaycastHit hit;
-            //variable for where the Raycast has hit
-            bool hasHit = Physics.Raycast(GetMouseRay(), out hit);
-            //passing in ray and hit, retrieveing out hit and storing information on where the raycast has hit into the hit var.
-            //RaycastHit passes out a bool.
-            Debug.DrawRay(GetMouseRay().origin, GetMouseRay().direction * 100);
-            //draw in the editor where the ray is being shot. The 100 multiplies the length of the ray to make it more visible.
+            
+            Vector3 target;
+            //the vector3 of where we clicked
+            bool hasHit = RaycastNavmesh(out target);
+            //checks if the location is on the navmesh, and returns the target if true
+
             if (hasHit)
             {
                 if (Input.GetMouseButton(0))
                 //GetMouseButton is true while the button is held,GetMouseButtonDown is true when pressed, must be pressed again to trigger again
                 {
-                    PlayerMover.StartMoveAction(hit.point, 1f);
+                    PlayerMover.StartMoveAction(target, 1f);
                     //passes the point where the ray hits an object as a vector3, as well as player full speed
                 }
                 SetCursor(CursorType.Movement);
@@ -134,6 +136,27 @@ namespace RPG.Control
             //if the ray does not find an object the player can interact with, return false
         }
 
+        private bool RaycastNavmesh(out Vector3 target)
+        {
+            target = new Vector3();
+            //default vector3 val for if hasHit is false
+            RaycastHit hit;
+            //variable for where the Raycast has hit
+            bool hasHit = Physics.Raycast(GetMouseRay(), out hit);
+            //passing in ray and hit, retrieveing out hit and storing information on where the raycast has hit into the hit var.
+            //RaycastHit passes out a bool.
+
+            if(!hasHit) return false;
+
+            NavMeshHit navMeshHit;
+            bool hasCastToNavMesh = NavMesh.SamplePosition(hit.point, out navMeshHit, maxNavMeshProjectionDistance, NavMesh.AllAreas);
+            //tells us if we sucessfully found a position closest to our navmesh within our max projection distance
+            if(!hasCastToNavMesh) return false;
+            //failed to find spot within projection distance on nav mesh
+            target = navMeshHit.position;
+            //gives position on the nav mesh that we cast to
+            return true;
+        }
 
         private void SetCursor(CursorType type)
         {
