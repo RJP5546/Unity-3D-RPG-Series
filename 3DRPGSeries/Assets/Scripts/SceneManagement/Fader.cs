@@ -16,7 +16,7 @@ namespace RPG.SceneManagement
             //gets the canvas group component and assigns it as a local variable.
         }
 
-        public IEnumerator Fade(float target, float time)
+        public Coroutine Fade(float target, float time)
         {
             if(currentActiveFade != null)
             {
@@ -25,7 +25,7 @@ namespace RPG.SceneManagement
             }
             currentActiveFade = StartCoroutine(FadeRoutine(target, time));
             //starts the fade out coroutine and sets it as the active coroutine
-            yield return currentActiveFade;
+            return currentActiveFade;
         }
 
         private IEnumerator FadeRoutine(float target, float time)
@@ -40,13 +40,13 @@ namespace RPG.SceneManagement
                 //every IEnum needs a return
             }
         }
-        public IEnumerator FadeOut(float time)
+        public Coroutine FadeOut(float time)
         {
             return Fade(1, time);
             //calls for a coroutine to be started fading to 1
         }
 
-        public IEnumerator FadeIn(float time)
+        public Coroutine FadeIn(float time)
         {
             return Fade(0, time);
             //calls for a coroutine to be started fading to 0

@@ -1,9 +1,8 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
+using RPG.Control;
 
 namespace RPG.SceneManagement
 {
@@ -46,6 +45,11 @@ namespace RPG.SceneManagement
             //finds the fader GameObject
             SavingWrapper savingWrapper = FindObjectOfType<SavingWrapper>();
             //finds the saving wrapper component
+            PlayerController playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+            //gets a refrence to the players player controller
+            playerController.enabled = false;
+            //disables player control
+
             yield return fader.FadeOut(fadeOutTime);
             //fade the screen out
 
@@ -55,6 +59,10 @@ namespace RPG.SceneManagement
             yield return SceneManager.LoadSceneAsync(sceneToLoad);
             //loads next scene based off of load index value inputted, returns async operation when the scene has finished loading,
             //calling the coroutine again.
+            PlayerController newPlayerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+            //gets a refrence to the new scene's player, player controller
+            newPlayerController.enabled = false;
+            //disables player control on the new scene's player
 
             savingWrapper.Load();
             //load data from the save
@@ -69,9 +77,11 @@ namespace RPG.SceneManagement
 
             yield return new WaitForSeconds(fadeWaitTime);
             //pause to let all the cameras and player objects find their correct posititon
-            yield return fader.FadeIn(fadeInTime);
-            //fade the screen back in
+            fader.FadeIn(fadeInTime);
+            //fade the screen back in, immedeately continue on, dont wait for fader to fade all the way in
 
+            newPlayerController.enabled = true;
+            //returns control to the player once all transitions are done
             Destroy(gameObject);
             //destroys portal when its no longer needed, preventing unwanted overlap
         }
