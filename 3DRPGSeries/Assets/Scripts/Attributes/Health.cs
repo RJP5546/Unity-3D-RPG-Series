@@ -96,7 +96,13 @@ namespace RPG.Attributes
         public float GetPercentage()
         {
             return 100 * (healthPoints.value / GetComponent<BaseStats>().GetStat(Stat.Health));
-            //returns the health of the player as a percentage
+            //returns the health of the player as a percentage (0 to 100)
+        }
+
+        public float GetFraction()
+        {
+            return healthPoints.value / GetComponent<BaseStats>().GetStat(Stat.Health);
+            //returns the fraction of the players health, same as percent, just not multiplied by 100 (0 to 1)
         }
 
         private void Die()
