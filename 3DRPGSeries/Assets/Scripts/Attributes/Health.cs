@@ -4,12 +4,14 @@ using RPG.Saving;
 using RPG.Stats;
 using RPG.Core;
 using GameDevTV.Utils;
+using UnityEngine.Events;
 
 namespace RPG.Attributes
 {
     public class Health : MonoBehaviour, IJsonSaveable
     {
-
+        [SerializeField] UnityEvent takeDamage;
+        //creates a unity event for scripts to listen for
         [SerializeField] float regerationPercentage = 70;
         //percentage of max health that the player regenerates to on level up
 
@@ -67,12 +69,18 @@ namespace RPG.Attributes
 
             healthPoints.value = Mathf.Max(healthPoints.value - damage, 0f);
             //sets healthPoints to whats higher, either healthPoints- damage, or 0. This prevents healthPoints from going below 0
+
             if(healthPoints.value == 0f)
             {
                 Die();
                 //when the object health hits 0, call Die().
                 AwardExperience(instigator);
                 //award experience to the instagator
+            }
+            else
+            {
+                takeDamage.Invoke();
+                //calls the take damage event if the player is not dead 
             }
         }
 
