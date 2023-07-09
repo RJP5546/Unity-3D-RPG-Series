@@ -8,35 +8,48 @@ namespace RPG.SceneManagement
     {
         CanvasGroup canvasGroup;
         //the game objects canvas group local variable
+        Coroutine currentActiveFade = null;
+        //sets a refrence to the current coroutine
         public void Awake ()
         {
             canvasGroup = GetComponent<CanvasGroup>();
             //gets the canvas group component and assigns it as a local variable.
         }
 
-        public IEnumerator FadeOut(float time)
+        public IEnumerator Fade(float target, float time)
         {
-            while (canvasGroup.alpha < 1)
-                //while alpha less than 1
+            if(currentActiveFade != null)
             {
-                canvasGroup.alpha += Time.deltaTime / time;
-                //sets the alpha to fade to 1 over the passed amount of time
+                StopCoroutine(currentActiveFade);
+                //if there is a current running coroutine, stop it
+            }
+            currentActiveFade = StartCoroutine(FadeRoutine(target, time));
+            //starts the fade out coroutine and sets it as the active coroutine
+            yield return currentActiveFade;
+        }
+
+        private IEnumerator FadeRoutine(float target, float time)
+            //the fade routine for fading in or out
+        {
+            while (!Mathf.Approximately(canvasGroup.alpha, target))
+            //while alpha less than 1
+            {
+                canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha, target, Time.deltaTime / time);
+                //sets the alpha to fade to either 0 or 1 over the passed amount of time
                 yield return null;
                 //every IEnum needs a return
             }
+        }
+        public IEnumerator FadeOut(float time)
+        {
+            return Fade(1, time);
+            //calls for a coroutine to be started fading to 1
         }
 
         public IEnumerator FadeIn(float time)
         {
-            while (canvasGroup.alpha > 0)
-            //while alpha more than 0
-            {
-                canvasGroup.alpha -= Time.deltaTime / time;
-                //sets the alpha to fade to 0 over the passed amount of time
-                yield return null;
-                //every IEnum needs a return
-            }
+            return Fade(0, time);
+            //calls for a coroutine to be started fading to 0
         }
-
     }
 }

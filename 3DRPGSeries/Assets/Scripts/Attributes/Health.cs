@@ -129,7 +129,7 @@ namespace RPG.Attributes
 
         public JToken CaptureAsJToken()
         {
-            return JToken.FromObject(healthPoints);
+            return JToken.FromObject(healthPoints.value);
         }
         public void RestoreFromJToken(JToken state)
         {
