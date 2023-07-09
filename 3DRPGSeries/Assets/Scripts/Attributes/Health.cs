@@ -10,8 +10,8 @@ namespace RPG.Attributes
 {
     public class Health : MonoBehaviour, IJsonSaveable
     {
-        [SerializeField] UnityEvent takeDamage;
-        //creates a unity event for scripts to listen for
+        [SerializeField] UnityEvent<float> takeDamage;
+        //creates a unity event for scripts to listen for, takes a float argument with it
         [SerializeField] float regerationPercentage = 70;
         //percentage of max health that the player regenerates to on level up
 
@@ -79,8 +79,8 @@ namespace RPG.Attributes
             }
             else
             {
-                takeDamage.Invoke();
-                //calls the take damage event if the player is not dead 
+                takeDamage.Invoke(damage);
+                //calls the take damage event if the player is not dead, passing the damage value
             }
         }
 
