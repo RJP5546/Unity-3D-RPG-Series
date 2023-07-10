@@ -18,6 +18,8 @@ namespace RPG.Control
         //cache refrence to the health component
         [SerializeField] float maxNavMeshProjectionDistance = 1f;
         //max distance the navmesh will project to find the closest point on a mesh if clicked off a nav mesh
+        [SerializeField] float raycastRadius = 1f;
+        //radius for the raycast on interactable enemy targeting
 
 
         [System.Serializable]
@@ -83,8 +85,8 @@ namespace RPG.Control
 
         RaycastHit[] RaycastAllSorted()
         {
-            RaycastHit[] hits = Physics.RaycastAll(GetMouseRay());
-            //puts everything the ray hits into an array
+            RaycastHit[] hits = Physics.SphereCastAll(GetMouseRay(), raycastRadius);
+            //puts everything the sphere cast hits into an array
             float[] distances = new float[hits.Length];
             //creates an array for the hit item distances thats the same length as the hits array
             for( int i = 0; i < hits.Length; i++)

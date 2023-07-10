@@ -218,6 +218,7 @@ MonoBehaviour:
   ChaseDistance: 5
   suspicionTime: 5
   agroCoolDownTime: 5
+  shoutDistance: 10
   waypointTolerance: 1
   waypointDwellTime: 3
   patrolSpeedFraction: 0.44

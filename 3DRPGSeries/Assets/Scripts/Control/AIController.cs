@@ -26,6 +26,8 @@ namespace RPG.Control
         //Time since the object last saw the player that it will remain suspicious
         [SerializeField] float agroCoolDownTime = 5f;
         //Time since the object became aggravated that it will remain aggravated
+        [SerializeField] float shoutDistance = 5f;
+        //Distance object will alert nearby enemies
         [SerializeField] float waypointTolerance = 1f;
         //The level of variance in detecting if the object is at its target waypoint 
         [SerializeField] float waypointDwellTime = 1f;
@@ -160,6 +162,25 @@ namespace RPG.Control
             //reset the time since the player was last seen
             fighter.Attack(player);
             //Calls the Attack() method from the fighter script
+
+            AggravateNearbyEnemies();
+            //aggravates any nearby enemies
+        }
+
+        private void AggravateNearbyEnemies()
+        {
+            RaycastHit[] hits = Physics.SphereCastAll(transform.position, shoutDistance, Vector3.up, 0);
+            //creates an array of items in a sphere around the current objects transform, with a radius of shoutDistance.
+            foreach (RaycastHit hit in hits)
+            {
+                AIController ai = hit.collider.GetComponent<AIController>();
+                //gets the AIController of the hit object
+                if(ai == null) { continue; }
+                //if there is no AIController, move on to next item in list
+
+                ai.Aggravate();
+                //aggrovates the AIController of the hit item
+            }
         }
 
         private bool IsAggravated()
