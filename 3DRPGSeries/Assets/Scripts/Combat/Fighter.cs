@@ -28,26 +28,27 @@ namespace RPG.Combat
         //the Health component of the combat target, gives us acess to health methods (like IsDead()).
         float timeSinceLastAttack = Mathf.Infinity;
         //the time since the player last attacked, initialised as infinity so the first attack is always avalible without waiting
-        LazyValue<WeaponConfig> currentWeapon;
-        //uses the lazy value wrapper class to ensure initialization before refrence, tracks the players current weapon
+        WeaponConfig currentWeaponConfig;
+        //tracks the players current weapon config
+        LazyValue<Weapon> currentWeapon;
+        //the current equipped weapon
 
         private void Awake()
         {
-            currentWeapon = new LazyValue<WeaponConfig>(SetupDefaultWeapon);
+            currentWeaponConfig = defaultWeapon;
+            currentWeapon = new LazyValue<Weapon>(SetupDefaultWeapon);
         }
 
-        private WeaponConfig SetupDefaultWeapon()
+        private Weapon SetupDefaultWeapon()
         {
-            AttachWeapon(defaultWeapon);
+            return AttachWeapon(defaultWeapon);
             //equips the default weapon to the player
-            return defaultWeapon;
-            //sets current weapon to the default weapon
         }
 
         private void Start()
         {
             currentWeapon.ForceInit();
-            //forces the initialization of the weapon
+            //forces the weapon to spawn if not previously instantiated
         }
 
         private void Update()
@@ -74,16 +75,16 @@ namespace RPG.Combat
 
         public void EquipWeapon(WeaponConfig weapon)
         {
-            currentWeapon.value = weapon;
+            currentWeaponConfig = weapon;
             //set the current weapon
-            AttachWeapon(weapon);
+            currentWeapon.value = AttachWeapon(weapon);
         }
 
-        private void AttachWeapon(WeaponConfig weapon)
+        private Weapon AttachWeapon(WeaponConfig weapon)
         {
             Animator animator = GetComponent<Animator>();
             //gets local refrence to the animator
-            weapon.Spawn(rightHandTransform, leftHandTransform, animator);
+            return weapon.Spawn(rightHandTransform, leftHandTransform, animator);
             //tell the weapon class to spawn the weapon, passes the hand transform and animator for the object
         }
 
@@ -127,9 +128,16 @@ namespace RPG.Combat
 
             float damage = GetComponent<BaseStats>().GetStat(Stat.Damage);
             //gets the damage based off of the Damage Stat
-            if (currentWeapon.value.HasProjectile())
+
+            if (currentWeapon.value != null)
             {
-                currentWeapon.value.LaunchProjectile(rightHandTransform, leftHandTransform, target, gameObject, damage);
+                currentWeapon.value.OnHit();
+                //if there is an equipped weapon, call the OnHit event in Weapon
+            }
+
+            if (currentWeaponConfig.HasProjectile())
+            {
+                currentWeaponConfig.LaunchProjectile(rightHandTransform, leftHandTransform, target, gameObject, damage);
                 //if the current weapon has a projectile, launch it (not hit the enemy event, its the animation trigger event)
             }
             else 
@@ -148,7 +156,7 @@ namespace RPG.Combat
 
         private bool GetIsInRange()
         {
-            return Vector3.Distance(transform.position, target.transform.position) < currentWeapon.value.GetRange();
+            return Vector3.Distance(transform.position, target.transform.position) < currentWeaponConfig.GetRange();
             //if the distance between self, and target position is in range, set true.
         }
 
@@ -183,7 +191,7 @@ namespace RPG.Combat
         {
             if(stat == Stat.Damage)
             {
-                yield return currentWeapon.value.GetDamage();
+                yield return currentWeaponConfig.GetDamage();
                 //returns the amount of damage the weapon does if the stat requested is the damage stat
             }
         }
@@ -191,7 +199,7 @@ namespace RPG.Combat
         {
             if (stat == Stat.Damage)
             {
-                yield return currentWeapon.value.GetDamagePercentageBonus();
+                yield return currentWeaponConfig.GetDamagePercentageBonus();
                 //returns the percent of damage buff the weapon does if the stat requested is the damage stat
             }
         }
@@ -208,7 +216,7 @@ namespace RPG.Combat
 
         public JToken CaptureAsJToken()
         {
-            return currentWeapon.value.name;
+            return currentWeaponConfig.name;
         }
 
         public void RestoreFromJToken(JToken state)

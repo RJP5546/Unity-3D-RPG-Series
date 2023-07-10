@@ -25,15 +25,17 @@ namespace RPG.Combat
         const string weaponName = "Weapon";
         //sets a constant string name to make refrence easy and consistant
 
-        public void Spawn(Transform rightHand,Transform leftHand, Animator animator)
+        public Weapon Spawn(Transform rightHand,Transform leftHand, Animator animator)
         {
             DesroyOldWeapon(rightHand, leftHand);
 
+            Weapon weapon = null;
+            //defaults weapon to null for return
             if(equippedPrefab != null)
             {
                 Transform handTransform = GetTransform(rightHand, leftHand);
-                Weapon weapon = Instantiate(equippedPrefab, handTransform);
-                //instantiates the equipped weapon at the set hand transform
+                weapon = Instantiate(equippedPrefab, handTransform);
+                //sets the equipped weapon at the set hand transform
                 weapon.gameObject.name = weaponName;
                 //sets the name component of the weapon
             }
@@ -52,6 +54,10 @@ namespace RPG.Combat
                 //sets the animator controller to the overrides parent controller (default player controller)
                 //(runtimeAnimatorController is the parent controller)
             }
+
+            return weapon;
+            //returns the equipped weapon
+
         }
 
         private void DesroyOldWeapon(Transform rightHand, Transform leftHand)
