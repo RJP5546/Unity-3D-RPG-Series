@@ -121,6 +121,9 @@ namespace RPG.Control
 
             if (hasHit)
             {
+                if (!GetComponent<Mover>().CanMoveTo(target)) return false;
+                //if the player can move to the target
+
                 if (Input.GetMouseButton(0))
                 //GetMouseButton is true while the button is held,GetMouseButtonDown is true when pressed, must be pressed again to trigger again
                 {
