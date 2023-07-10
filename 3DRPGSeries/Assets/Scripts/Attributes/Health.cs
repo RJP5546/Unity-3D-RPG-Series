@@ -5,6 +5,7 @@ using RPG.Stats;
 using RPG.Core;
 using GameDevTV.Utils;
 using UnityEngine.Events;
+using System;
 
 namespace RPG.Attributes
 {
@@ -67,8 +68,6 @@ namespace RPG.Attributes
 
         public void TakeDamage(GameObject instigator, float damage)
         {
-            print(gameObject.name + " took Damage: "+ damage);
-
             healthPoints.value = Mathf.Max(healthPoints.value - damage, 0f);
             //sets healthPoints to whats higher, either healthPoints- damage, or 0. This prevents healthPoints from going below 0
 
@@ -86,6 +85,13 @@ namespace RPG.Attributes
                 takeDamage.Invoke(damage);
                 //calls the take damage event if the player is not dead, passing the damage value
             }
+        }
+
+        public void Heal(float healthToRestore)
+        {
+            healthPoints.value = Mathf.Min(healthPoints.value + healthToRestore, GetMaxHealthPoints());
+            //sets healthPoints to whats lower, either healthPoints + healthToRestore,
+            //or Max health. This prevents healthPoints from going above max.
         }
 
         public float GetHealthPoints()
@@ -143,6 +149,7 @@ namespace RPG.Attributes
                 Die();
             }
         }
+
     }
 }
 

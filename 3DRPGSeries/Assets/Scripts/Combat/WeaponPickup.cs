@@ -1,3 +1,4 @@
+using RPG.Attributes;
 using RPG.Control;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,20 +12,31 @@ namespace RPG.Combat
         //a refrence to what weapon is on the ground
         [SerializeField] float respawnTime = 5f;
         //time the object will be hidden before becomeing active again
+        [SerializeField] float healthToRestore = 0;
+        //temporary value for health restoration for testing.
 
         private void OnTriggerEnter(Collider other)
         {
             if(other.gameObject.tag == "Player")
             {
-                Pickup(other.GetComponent<Fighter>());
+                Pickup(other.gameObject);
                 //pick up this object, passing who is picking it up
             }
         }
 
-        private void Pickup(Fighter fighter)
+        private void Pickup(GameObject subject)
         {
-            fighter.EquipWeapon(weapon);
-            //get the players passed fighter component and run EquipWeapon with the passed weapon type
+            if (weapon != null)
+            {
+                subject.GetComponent<Fighter>().EquipWeapon(weapon);
+                //get the players passed fighter component and run EquipWeapon with the passed weapon type 
+            }
+            
+            if (healthToRestore > 0)
+            {
+                subject.GetComponent<Health>().Heal(healthToRestore);
+                //get the players passed health component and run Heal with the passed healthToRestore
+            }
             StartCoroutine(HideForSeconds(respawnTime));
             //starts the respawn timer and functions
         }
@@ -52,7 +64,7 @@ namespace RPG.Combat
         {
             if (Input.GetMouseButtonDown(0))
             {
-                Pickup(callingController.GetComponent<Fighter>());
+                Pickup(callingController.gameObject);
                 //pick up this object, passing who is picking it up
             }
             return true;
