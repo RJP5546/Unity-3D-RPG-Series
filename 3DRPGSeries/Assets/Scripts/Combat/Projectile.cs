@@ -1,5 +1,6 @@
 using RPG.Attributes;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace RPG.Combat
 {
@@ -17,6 +18,8 @@ namespace RPG.Combat
         //list of game objects to destroy on projectile impact.
         [SerializeField] float lifeAfterImpact = 2f;
         //how long the non destroyOnHit components of a projectile live after impact.
+        [SerializeField] UnityEvent onHit;
+        //creates a unity event to be played on projectile hit
 
 
         Health target = null;
@@ -73,14 +76,18 @@ namespace RPG.Combat
 
         private void OnTriggerEnter(Collider other)
         {
-            speed = 0;
-            //stops the projectile on impact
             if (other.GetComponent<Health>() != target) { return; }
             //if the object hit is not our target, ignore
             if (target.IsDead()) { return; }
             //if the target is dead, dont deal damage and dont destroy the projectile
             target.TakeDamage(instigator, damage);
             //if it is the right target, deal damage
+
+            speed = 0;
+            //stops the projectile on impact
+
+            onHit.Invoke();
+            //invokes the onHit unity event
 
             if (hitEffect != null)
             {

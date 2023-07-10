@@ -14,6 +14,8 @@ namespace RPG.Attributes
         //creates a unity event for scripts to listen for, takes a float argument with it
         [SerializeField] float regerationPercentage = 70;
         //percentage of max health that the player regenerates to on level up
+        [SerializeField] UnityEvent onDie;
+        //creates a unity event for when the character dies
 
         LazyValue<float> healthPoints;
         //uses the lazy value wrapper class to ensure initialization before refrence
@@ -72,6 +74,8 @@ namespace RPG.Attributes
 
             if(healthPoints.value == 0f)
             {
+                onDie.Invoke();
+                //invoke the unity event
                 Die();
                 //when the object health hits 0, call Die().
                 AwardExperience(instigator);
