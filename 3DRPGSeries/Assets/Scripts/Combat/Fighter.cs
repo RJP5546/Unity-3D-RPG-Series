@@ -20,7 +20,7 @@ namespace RPG.Combat
         //transform of the players right hand that the weapon will be attaching to
         [SerializeField] Transform leftHandTransform = null;
         //transform of the players left hand that the weapon will be attaching to
-        [SerializeField] Weapon defaultWeapon = null;
+        [SerializeField] WeaponConfig defaultWeapon = null;
         //initialise the equipped weapon as null, can be assigned later
 
         
@@ -28,15 +28,15 @@ namespace RPG.Combat
         //the Health component of the combat target, gives us acess to health methods (like IsDead()).
         float timeSinceLastAttack = Mathf.Infinity;
         //the time since the player last attacked, initialised as infinity so the first attack is always avalible without waiting
-        LazyValue<Weapon> currentWeapon;
+        LazyValue<WeaponConfig> currentWeapon;
         //uses the lazy value wrapper class to ensure initialization before refrence, tracks the players current weapon
 
         private void Awake()
         {
-            currentWeapon = new LazyValue<Weapon>(SetupDefaultWeapon);
+            currentWeapon = new LazyValue<WeaponConfig>(SetupDefaultWeapon);
         }
 
-        private Weapon SetupDefaultWeapon()
+        private WeaponConfig SetupDefaultWeapon()
         {
             AttachWeapon(defaultWeapon);
             //equips the default weapon to the player
@@ -72,14 +72,14 @@ namespace RPG.Combat
             }
         }
 
-        public void EquipWeapon(Weapon weapon)
+        public void EquipWeapon(WeaponConfig weapon)
         {
             currentWeapon.value = weapon;
             //set the current weapon
             AttachWeapon(weapon);
         }
 
-        private void AttachWeapon(Weapon weapon)
+        private void AttachWeapon(WeaponConfig weapon)
         {
             Animator animator = GetComponent<Animator>();
             //gets local refrence to the animator
@@ -215,7 +215,7 @@ namespace RPG.Combat
         {
             string weaponName = (string)state;
             //cast the state as a string
-            Weapon weapon = Resources.Load<Weapon>(weaponName);
+            WeaponConfig weapon = Resources.Load<WeaponConfig>(weaponName);
             //load the weapon from the resources folder
             EquipWeapon(weapon);
             //equip the saved weapon

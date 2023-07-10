@@ -7,7 +7,7 @@ namespace RPG.Combat
 {
     public class WeaponPickup : MonoBehaviour, IRaycastable
     {
-        [SerializeField] Weapon weapon = null;
+        [SerializeField] WeaponConfig weapon = null;
         //a refrence to what weapon is on the ground
         [SerializeField] float respawnTime = 5f;
         //time the object will be hidden before becomeing active again
