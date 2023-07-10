@@ -22,8 +22,10 @@ namespace RPG.Control
         //cache refrence to the objects patrol path, can be null
         [SerializeField] float ChaseDistance = 5f;
         //distance from the enemy that it will chase the player
-        [SerializeField] float suspicionTime = 5f;
+        [SerializeField] float suspicionTime = 3f;
         //Time since the object last saw the player that it will remain suspicious
+        [SerializeField] float agroCoolDownTime = 5f;
+        //Time since the object became aggravated that it will remain aggravated
         [SerializeField] float waypointTolerance = 1f;
         //The level of variance in detecting if the object is at its target waypoint 
         [SerializeField] float waypointDwellTime = 1f;
@@ -44,6 +46,8 @@ namespace RPG.Control
         //int that tracks what index of the patrol path the object is currently on
         float timeSinceArrivedAtWaypoint = Mathf.Infinity;
         //A float to keep track of how long it has been since the object has arrived at its current waypoint.
+        float timeSinceAggravated = Mathf.Infinity;
+        //the time since the enemy became aggravated.
 
         private void Awake()
         {
@@ -69,7 +73,7 @@ namespace RPG.Control
         {
             if (health.IsDead()) { return; }
             //if the player is dead, do nothing
-            if (InAttackRangeOfPlayer() && fighter.CanAttack(player))
+            if (IsAggravated() && fighter.CanAttack(player))
             //if the player is within the attack range, and the fighter component can attack player, enter attack state
             {
                 AttackBehaviour();
@@ -87,12 +91,20 @@ namespace RPG.Control
             UpdateTimers();
         }
 
+        public void Aggravate()
+        {
+            timeSinceAggravated = 0;
+            //resets the time since aggravated
+        }
+
         private void UpdateTimers()
         {
             timeSinceLastSawPlayer += Time.deltaTime;
             //increments the time since the enemy last saw the player
             timeSinceArrivedAtWaypoint += Time.deltaTime;
             //increments the time since the object arrived at the current waypoint
+            timeSinceAggravated += Time.deltaTime;
+            //increments the time since the enemy became aggravated
         }
 
         private void PatrolBehaviour()
@@ -150,12 +162,12 @@ namespace RPG.Control
             //Calls the Attack() method from the fighter script
         }
 
-        private bool InAttackRangeOfPlayer()
+        private bool IsAggravated()
         {
             float distanceToPlayer = Vector3.Distance(player.transform.position, transform.position);
             //gets the distance from the player game object to the self position
-            return distanceToPlayer < ChaseDistance;
-            //returns if distanceToPlayer is less than ChaseDistance
+            return distanceToPlayer < ChaseDistance || timeSinceAggravated < agroCoolDownTime;
+            //returns if distanceToPlayer is less than ChaseDistance or if the AI is aggravated
         }
 
         private void OnDrawGizmosSelected()
